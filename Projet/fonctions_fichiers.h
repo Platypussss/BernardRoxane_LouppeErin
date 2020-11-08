@@ -4,17 +4,19 @@
 #include <stdbool.h>
 
 
-/**alloue un tableau de caractère de taille n*m
-*n nombre de colonne
-*m nb de ligne
-*initialisé avec le caractère " "
-*/
-char** allouer_tab_2D(int n, int m);
+/**Compte le nombre de lignes du fichier*/
+int nbLigne(const char* nomFichier);
 
-/**désalloue la mémoire du tableau
-*n nombre de lignes
-*/
-void desallouer_tab_2D(char** tab,int n);
+/**Compte le nombre max de colonne du fichier*/
+int nbColonne(const char* nomFichier);
 
-/**affiche le contenu du tableau*/
-void afficher_tab_2D(char** tab,int n,int m);
+/**affiche le nombre maximum de lignes et celui de colonne dans le fichier*/
+void afficher_taille_fichier(const char* nomFichier);
+
+/**lit un fichier dont le nomestnomFichier
+*retourne le tableau qui contient les caractères du fichier tel qu’une ligne du tableau *correspond à une ligne du fichier.
+*/
+char** lire_fichier(const char* nomFichier);
+
+/**écrit le tableau dans le fichier*/
+void ecrire_fichier(const char* nomFichier, char** tab, int n, int m);
