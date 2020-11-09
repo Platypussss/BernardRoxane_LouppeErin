@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "fonction_image.h"
+#include "fonctions_fichiers.c"
+//#include "fonctions_tableau.c"
 
 
 /**charge une image et retourne la surface de texture associée*/

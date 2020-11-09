@@ -25,7 +25,6 @@ int main(int argc, char *argv[]){
 	ecran=SDL_CreateRenderer(fenetre,-1,SDL_RENDERER_ACCELERATED);
 	//Charger l'image
 	SDL_Texture* fond=charger_image("ressources/fond1.bmp",ecran);
- 	SDL_Texture* mur=charger_image("ressources/murtoutseul.bmp",ecran);
 	// Boucle principale
 	while(!terminer){
 		SDL_RenderClear(ecran);

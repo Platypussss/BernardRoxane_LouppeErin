@@ -88,18 +88,16 @@ char** lire_fichier(const char* nomFichier){
 	int n=nbColonne(nomFichier);
 	int m=nbLigne(nomFichier);
 	tab=allouer_tab_2D(n,m);
-	int i=0;
 	int c;
 	if(file==NULL){
 		perror("Erreur dans l'ouverture du fichier");
 	}else{
-		while((c=fgetc(file))!=EOF){
-			i++;
+		for(int i=0;i<m;i++){
+			c=fgetc(file);
 			while(c!='\n'){ //pas à la fin de la ligne
-				for(int j=0; j<m;j++){
-					c=fgetc(file);
+				for(int j=0; j<n;j++){
 					tab[i][j]=c;
-					printf("%c",tab[i][j]);
+					c=fgetc(file);
 				}
 			}	
 		}
@@ -116,8 +114,8 @@ void ecrire_fichier(const char* nomFichier, char** tab, int n, int m){
 		perror("Erreur dans l'ouverture du fichier");
 	}else{
 		int j=0;
-		for(int i=0;i<m;i++){
-			while(j<n){
+		for(int i=0;i<n;i++){
+			while(j<m){
 				fputc(tab[i][j],file);
 				if(ferror(file)){
 					perror("Erreur dans l'écriture du fichier.\n");
