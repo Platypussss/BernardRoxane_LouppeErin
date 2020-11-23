@@ -16,4 +16,6 @@ SDL_Texture* charger_image(const char* nomfichier, SDL_Renderer* renderer);
 */
 void apply_texture(SDL_Texture *texture,SDL_Renderer *renderer,int x, int y);
 
+
+
 #endif

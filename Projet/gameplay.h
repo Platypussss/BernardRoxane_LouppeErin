@@ -6,10 +6,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-/*struct joueur_s{
-	int vie;
-	...
+struct joueur_s{
+	int x;
+	int y;
 };
-typedef joueur_s joueur_t;*/
+typedef struct joueur_s joueur_t;
+
+void init_joueur(joueur_t j,int a,int b);
 
 #endif

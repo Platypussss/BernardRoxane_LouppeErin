@@ -29,24 +29,14 @@ int main(int argc, char *argv[]){
 	SDL_Texture* fond=charger_image("ressources/fond1.bmp",ecran);
 	SDL_Texture* perso=charger_image("ressources/perso1.bmp",ecran);
 	
-	//création du fichier pour appliquer les obstacles, personnages...
-	/*
-	"j" -> joueur
-	"m" -> mur
-	"e" -> ennemies
-	" " -> vide
-	
-	char** tab;
-	tab=allouer_tab(SCREEN_WIDTH,SCREEN_HEIGHT);
-	modif_caractère(...);
-	ecrire_fichier("file.txt",tab,SCREEN_WIDTH,SCREEN_HEIGHT);
-	*/
+	joueur_t joueur;
+	init_joueur(joueur,100,100);
 	
 	// Boucle principale
 	while(!terminer){
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,fond,NULL,NULL);
-		apply_texture(perso,ecran,0,0);
+		apply_texture(perso,ecran,joueur.x,joueur.y);
 		SDL_RenderPresent(ecran);
 		while( SDL_PollEvent(&evenements ) )
 		switch(evenements.type){
@@ -60,27 +50,16 @@ int main(int argc, char *argv[]){
 					terminer = true;  
 					break;
 				case SDLK_UP:
-					/*
-					lire_fichier ->récupère la position du joueur
-					modif_caractere(tab...);
-					plusieurs fois
-					ecrire_fichier(...i,j...) du joueur
-					*/
+					joueur.y=(joueur.y)-1;
 					break;
 				case SDLK_DOWN:
-					/*
-					même chose avec j+1
-					*/
+					joueur.y=(joueur.y)+1;
 					break;
 				case SDLK_LEFT:
-					/*
-					même chose avec i-1
-					*/
+					joueur.x=(joueur.x)-1;
 					break;
 				case SDLK_RIGHT:
-					/*
-					même chose avec i+1
-					*/
+					joueur.x=(joueur.x)+1;
 					break;
 			}
 		}
