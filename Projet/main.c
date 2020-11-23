@@ -27,10 +27,12 @@ int main(int argc, char *argv[]){
 	
 	//Charger l'image
 	SDL_Texture* fond=charger_image("ressources/fond1.bmp",ecran);
-	SDL_Texture* perso=charger_image("ressources/perso1.bmp",ecran);
+	SDL_Texture* perso=charger_image("ressources/perso11.bmp",ecran);
 	
 	joueur_t joueur;
-	init_joueur(joueur,100,100);
+	int x=100;
+	int y=100;
+	init_joueur(joueur,x,y);
 	
 	// Boucle principale
 	while(!terminer){
@@ -45,21 +47,32 @@ int main(int argc, char *argv[]){
 				break;
 			case SDL_KEYDOWN:
 			switch(evenements.key.keysym.sym){
-				case SDLK_ESCAPE:
+				
 				case SDLK_q:
 					terminer = true;  
 					break;
 				case SDLK_UP:
-					joueur.y=(joueur.y)-1;
+					joueur.y=(joueur.y)-5;
 					break;
 				case SDLK_DOWN:
-					joueur.y=(joueur.y)+1;
+					joueur.y=(joueur.y)+5;
 					break;
 				case SDLK_LEFT:
-					joueur.x=(joueur.x)-1;
+					joueur.x=(joueur.x)-5;
 					break;
 				case SDLK_RIGHT:
-					joueur.x=(joueur.x)+1;
+					joueur.x=(joueur.x)+5;
+					break;
+				case SDLK_SPACE:
+					//valeur à ajuster avec le bon perso
+					joueur.y=(joueur.y)-50;
+					joueur.x=(joueur.x)+20;
+					SDL_RenderClear(ecran);
+					SDL_RenderCopy(ecran,fond,NULL,NULL);
+					apply_texture(perso,ecran,joueur.x,joueur.y);
+					SDL_RenderPresent(ecran);
+					SDL_Delay(20);
+					joueur.y=(joueur.y)+50;
 					break;
 			}
 		}

@@ -12,6 +12,7 @@ struct joueur_s{
 };
 typedef struct joueur_s joueur_t;
 
+/**initialise les données du joueur*/
 void init_joueur(joueur_t j,int a,int b);
 
 #endif
