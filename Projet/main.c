@@ -27,12 +27,10 @@ int main(int argc, char *argv[]){
 	
 	//Charger l'image
 	SDL_Texture* fond=charger_image("ressources/fond1.bmp",ecran);
-	SDL_Texture* perso=charger_image("ressources/perso11.bmp",ecran);
+	SDL_Texture* perso=charger_image("ressources/marche1.bmp",ecran);
 	
 	joueur_t joueur;
-	int x=100;
-	int y=100;
-	init_joueur(joueur,x,y);
+	init_joueur(joueur,500,0);
 	
 	// Boucle principale
 	while(!terminer){
@@ -53,26 +51,32 @@ int main(int argc, char *argv[]){
 					break;
 				case SDLK_UP:
 					joueur.y=(joueur.y)-5;
+					perso=charger_image("ressources/marche1.bmp",ecran);
 					break;
 				case SDLK_DOWN:
 					joueur.y=(joueur.y)+5;
+					perso=charger_image("ressources/accroupis.bmp",ecran);
 					break;
 				case SDLK_LEFT:
 					joueur.x=(joueur.x)-5;
+					perso=charger_image("ressources/marche1_envers.bmp",ecran);
 					break;
 				case SDLK_RIGHT:
 					joueur.x=(joueur.x)+5;
+					perso=charger_image("ressources/marche1.bmp",ecran);
 					break;
 				case SDLK_SPACE:
 					//valeur à ajuster avec le bon perso
 					joueur.y=(joueur.y)-50;
 					joueur.x=(joueur.x)+20;
+					perso=charger_image("ressources/saut.bmp",ecran);
 					SDL_RenderClear(ecran);
 					SDL_RenderCopy(ecran,fond,NULL,NULL);
 					apply_texture(perso,ecran,joueur.x,joueur.y);
 					SDL_RenderPresent(ecran);
-					SDL_Delay(20);
+					SDL_Delay(200);
 					joueur.y=(joueur.y)+50;
+					perso=charger_image("ressources/marche1.bmp",ecran);
 					break;
 			}
 		}

@@ -22,9 +22,12 @@ int est_en_collision_mur(joueur_t joueur,mur_t* mur){
 }	
 */
 
-/**
-void gere_collision_mur
-
+/**gère les collisions entre le joueur et les murs
+void gere_collision_mur(){
+	if(est_en_collision){
+		
+	}
+}	
 */
 
 
