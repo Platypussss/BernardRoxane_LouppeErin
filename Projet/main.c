@@ -34,19 +34,31 @@ int main(int argc, char *argv[]){
 	int y=425;
 
 	joueur_t joueur;
+<<<<<<< HEAD
 	init_joueur(&joueur,x,y,100,100);
 
 	mur_t mur;
 	init_mur(&mur,200,480,50,50);
 	
+=======
+	init_joueur(joueur,500,0);
+
+	mur_t mur;
+	init_mur(mur,100,100);
+>>>>>>> 0f917f66310870fc7df7f1409aaff5dd2c5b903f
 	
 
 	// Boucle principale
 	while(!terminer){
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,fond,NULL,NULL);
+<<<<<<< HEAD
 		apply_texture(perso,ecran,x,y);
 		apply_texture(murtoutseul,ecran,200,480);
+=======
+		apply_texture(perso,ecran,joueur.x,joueur.y);
+		apply_texture(murtoutseul,ecran,mur.x,mur.y);
+>>>>>>> 0f917f66310870fc7df7f1409aaff5dd2c5b903f
 		SDL_RenderPresent(ecran);
 		
 		while( SDL_PollEvent(&evenements ) )
