@@ -70,6 +70,7 @@ int main(int argc, char *argv[]){
 					joueur.x=(joueur.x)-5;
 					x=x-5;
 					if(1==(est_en_collision_mur(&joueur,&mur))){
+						//est en collision, on ne bouge pas
 						joueur.x=(joueur.x)+5;
 						x=x+5;
 						break;
@@ -80,6 +81,7 @@ int main(int argc, char *argv[]){
 					joueur.x=(joueur.x)+5;
 					x=x+5;
 					if(1==(est_en_collision_mur(&joueur,&mur))){
+						//est en collision, on ne bouge pas
 						joueur.x=(joueur.x)-5;
 						x=x-5;
 						break;
