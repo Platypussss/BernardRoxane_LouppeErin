@@ -28,16 +28,27 @@ int main(int argc, char *argv[]){
 	//Charger l'image
 	SDL_Texture* fond=charger_image("ressources/fond1.bmp",ecran);
 	SDL_Texture* perso=charger_image("ressources/marche1.bmp",ecran);
+	SDL_Texture* murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
 	
+	int x=0;
+	int y=425;
+
 	joueur_t joueur;
-	init_joueur(joueur,500,0);
+	init_joueur(&joueur,x,y,100,100);
+
+	mur_t mur;
+	init_mur(&mur,200,480,50,50);
 	
+	
+
 	// Boucle principale
 	while(!terminer){
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,fond,NULL,NULL);
-		apply_texture(perso,ecran,joueur.x,joueur.y);
+		apply_texture(perso,ecran,x,y);
+		apply_texture(murtoutseul,ecran,200,480);
 		SDL_RenderPresent(ecran);
+		
 		while( SDL_PollEvent(&evenements ) )
 		switch(evenements.type){
 			case SDL_QUIT:
@@ -50,32 +61,47 @@ int main(int argc, char *argv[]){
 					terminer = true;  
 					break;
 				case SDLK_UP:
-					joueur.y=(joueur.y)-5;
 					perso=charger_image("ressources/marche1.bmp",ecran);
 					break;
 				case SDLK_DOWN:
-					joueur.y=(joueur.y)+5;
 					perso=charger_image("ressources/accroupis.bmp",ecran);
 					break;
 				case SDLK_LEFT:
 					joueur.x=(joueur.x)-5;
+					x=x-5;
+					if(1==(est_en_collision_mur(&joueur,&mur))){
+						joueur.x=(joueur.x)+5;
+						x=x+5;
+						break;
+					}
 					perso=charger_image("ressources/marche1_envers.bmp",ecran);
 					break;
 				case SDLK_RIGHT:
 					joueur.x=(joueur.x)+5;
+					x=x+5;
+					if(1==(est_en_collision_mur(&joueur,&mur))){
+						joueur.x=(joueur.x)-5;
+						x=x-5;
+						break;
+					}
 					perso=charger_image("ressources/marche1.bmp",ecran);
 					break;
 				case SDLK_SPACE:
 					//valeur à ajuster avec le bon perso
 					joueur.y=(joueur.y)-50;
+					y=y-50;
 					joueur.x=(joueur.x)+20;
+					x=x+20;
+					murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
 					perso=charger_image("ressources/saut.bmp",ecran);
 					SDL_RenderClear(ecran);
 					SDL_RenderCopy(ecran,fond,NULL,NULL);
-					apply_texture(perso,ecran,joueur.x,joueur.y);
+					apply_texture(perso,ecran,x,y);
+					apply_texture(murtoutseul,ecran,200,480);
 					SDL_RenderPresent(ecran);
 					SDL_Delay(200);
 					joueur.y=(joueur.y)+50;
+					y=y+50;
 					perso=charger_image("ressources/marche1.bmp",ecran);
 					break;
 			}
