@@ -13,6 +13,11 @@ void init_joueur(joueur_t j,int a,int b){
 	j.y=b;
 }
 
+void init_mur(mur_t m, int a, int b){
+	m.x=a;
+	m.y=b;
+}
+
 /**détecte les collisions avec le joueur et les murs
 int est_en_collision_mur(joueur_t joueur,mur_t* mur){
 	if(((joueur.x)-(mur->x))*((joueur.x)-(mur->x))+(((joueur.y)-(mur->y))*((joueur.y)-(mur->y)))<((joueur.h)*(joueur.h))){

@@ -28,15 +28,20 @@ int main(int argc, char *argv[]){
 	//Charger l'image
 	SDL_Texture* fond=charger_image("ressources/fond1.bmp",ecran);
 	SDL_Texture* perso=charger_image("ressources/marche1.bmp",ecran);
+	SDL_Texture* murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
 	
 	joueur_t joueur;
 	init_joueur(joueur,500,0);
+
+	mur_t mur;
+	init_mur(mur,100,100);
 	
 	// Boucle principale
 	while(!terminer){
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,fond,NULL,NULL);
 		apply_texture(perso,ecran,joueur.x,joueur.y);
+		apply_texture(murtoutseul,ecran,mur.x,mur.y);
 		SDL_RenderPresent(ecran);
 		while( SDL_PollEvent(&evenements ) )
 		switch(evenements.type){
