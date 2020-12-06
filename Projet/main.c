@@ -26,41 +26,31 @@ int main(int argc, char *argv[]){
 	ecran=SDL_CreateRenderer(fenetre,-1,SDL_RENDERER_ACCELERATED);
 	
 	//Charger l'image
-	SDL_Texture* fond=charger_image("ressources/fond1.bmp",ecran);
-	SDL_Texture* perso=charger_image("ressources/marche1.bmp",ecran);
-	SDL_Texture* murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
+	textures_t textures;
+	textures.fond=charger_image("ressources/fond1.bmp",ecran);
+	textures.perso=charger_image("ressources/marche1.bmp",ecran);
+	textures.murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
 	
-	int x=0;
-	int y=425;
-
+	
 	joueur_t joueur;
-<<<<<<< HEAD
-	init_joueur(&joueur,x,y,100,100);
+	init_joueur(&joueur,0,425,100,100);
 
 	mur_t mur;
 	init_mur(&mur,200,480,50,50);
-	
-=======
-	init_joueur(joueur,500,0);
 
-	mur_t mur;
-	init_mur(mur,100,100);
->>>>>>> 0f917f66310870fc7df7f1409aaff5dd2c5b903f
-	
 
+	int tmp=1;
+	int sens=tmp;//1 droite,2 gauche,3 saut,4 bas*/
+	
 	// Boucle principale
 	while(!terminer){
-		SDL_RenderClear(ecran);
-		SDL_RenderCopy(ecran,fond,NULL,NULL);
-<<<<<<< HEAD
-		apply_texture(perso,ecran,x,y);
-		apply_texture(murtoutseul,ecran,200,480);
-=======
-		apply_texture(perso,ecran,joueur.x,joueur.y);
-		apply_texture(murtoutseul,ecran,mur.x,mur.y);
->>>>>>> 0f917f66310870fc7df7f1409aaff5dd2c5b903f
-		SDL_RenderPresent(ecran);
 		
+		SDL_RenderClear(ecran);
+		SDL_RenderCopy(ecran,textures.fond,NULL,NULL);
+		apply_texture(textures.perso,ecran,joueur.x,joueur.y);
+		apply_texture(textures.murtoutseul,ecran,200,480);
+		SDL_RenderPresent(ecran);
+		sens=tmp;
 		while( SDL_PollEvent(&evenements ) )
 		switch(evenements.type){
 			case SDL_QUIT:
@@ -68,62 +58,34 @@ int main(int argc, char *argv[]){
 				break;
 			case SDL_KEYDOWN:
 			switch(evenements.key.keysym.sym){
-				
 				case SDLK_q:
 					terminer = true;  
 					break;
 				case SDLK_UP:
-					perso=charger_image("ressources/marche1.bmp",ecran);
+					sens=bouger_haut(&textures,ecran,sens);
+					tmp=sens;
 					break;
 				case SDLK_DOWN:
-					perso=charger_image("ressources/accroupis.bmp",ecran);
+					sens=bouger_bas(&textures,ecran,sens);
+					tmp=sens;
 					break;
 				case SDLK_LEFT:
-					joueur.x=(joueur.x)-5;
-					x=x-5;
-					if(1==(est_en_collision_mur(&joueur,&mur))){
-						//est en collision, on ne bouge pas
-						joueur.x=(joueur.x)+5;
-						x=x+5;
-						break;
-					}
-					perso=charger_image("ressources/marche1_envers.bmp",ecran);
+					sens=bouger_gauche(&textures,ecran,&joueur,&mur,sens);
+					tmp=sens;
 					break;
 				case SDLK_RIGHT:
-					joueur.x=(joueur.x)+5;
-					x=x+5;
-					if(1==(est_en_collision_mur(&joueur,&mur))){
-						//est en collision, on ne bouge pas
-						joueur.x=(joueur.x)-5;
-						x=x-5;
-						break;
-					}
-					perso=charger_image("ressources/marche1.bmp",ecran);
+					sens=bouger_droite(&textures,ecran,&joueur,&mur,sens);
+					tmp=sens;
 					break;
 				case SDLK_SPACE:
-					//valeur à ajuster avec le bon perso
-					joueur.y=(joueur.y)-50;
-					y=y-50;
-					joueur.x=(joueur.x)+20;
-					x=x+20;
-					murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
-					perso=charger_image("ressources/saut.bmp",ecran);
-					SDL_RenderClear(ecran);
-					SDL_RenderCopy(ecran,fond,NULL,NULL);
-					apply_texture(perso,ecran,x,y);
-					apply_texture(murtoutseul,ecran,200,480);
-					SDL_RenderPresent(ecran);
-					SDL_Delay(200);
-					joueur.y=(joueur.y)+50;
-					y=y+50;
-					perso=charger_image("ressources/marche1.bmp",ecran);
+					tmp=sens;
+					sens=saut(&textures,ecran,&joueur,&mur,sens);
 					break;
 			}
 		}
-		
 	}
 	//Libérer de la mémoire
-	SDL_DestroyTexture(fond);
+	SDL_DestroyTexture(textures.fond);
 	SDL_DestroyRenderer(ecran);
 	// Quitter SDL
 	SDL_DestroyWindow(fenetre);
