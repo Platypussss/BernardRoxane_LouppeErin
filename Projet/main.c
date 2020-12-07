@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,textures.fond,NULL,NULL);
 		apply_texture(textures.perso,ecran,joueur.x,joueur.y);
-		apply_texture(textures.murtoutseul,ecran,200,480);
+		apply_texture(textures.murtoutseul,ecran,mur.x,mur.y);
 		SDL_RenderPresent(ecran);
 		sens=tmp;
 		while( SDL_PollEvent(&evenements ) )

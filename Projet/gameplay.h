@@ -56,13 +56,21 @@ void init_mur(mur_t* m,int a,int b,int c,int d);
 * \param j le joueur
 * \param m le mur
 */
-int est_en_collision_mur(joueur_t* joueur,mur_t* mur);
+int est_en_collision_mur(joueur_t* joueur,mur_t* mur,int sens);
+
+/**
+* \brief détecte si le joueur se trouve sur un mur
+* \param j le jouer
+* \param m le mur 
+* \return 1 si le joueur se trouve sur un mur
+*/
+int est_sur_mur(joueur_t* j,mur_t* m,int sens);
 
 /**
 * \brief bouge le perso vers le haut
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param sens du joueur 
+* \param sens du joueur,permet de changer de sprite
 */
 int bouger_haut(textures_t* textures,SDL_Renderer* renderer,int sens);
 
@@ -70,7 +78,7 @@ int bouger_haut(textures_t* textures,SDL_Renderer* renderer,int sens);
 * \brief bouge le perso vers le bas
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param sens du joueur 
+* \param sens du joueur,permet de changer de sprite
 */
 int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens);
 
@@ -80,7 +88,7 @@ int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens);
 * \param renderer la surface correspondant à la surface du jeu
 * \param joueur le joueur qui bouge
 * \param mur en potentiel collision avec le joueur
-* \param sens du joueur 
+* \param sens du joueur,permet de changer de sprite
 */
 int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur,int sens);
 
@@ -90,7 +98,7 @@ int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,m
 * \param renderer la surface correspondant à la surface du jeu
 * \param joueur le joueur qui bouge
 * \param mur en potentiel collision avec le joueur
-* \param sens du joueur 
+* \param sens du joueur,permet de changer de sprite
 */
 int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur,int sens);
 
