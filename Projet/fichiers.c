@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "fichiers.h"
-#include "tableau.c"
+
 
 /**Compte le nombre de lignes du fichier*/
 int nbLigne(const char* nomFichier){
@@ -81,13 +81,11 @@ void afficher_taille_fichier(const char* nomFichier){
 /**lit un fichier dont le nomestnomFichier
 *retourne le tableau qui contient les caractères du fichier tel qu’une ligne du tableau *correspond à une ligne du fichier.
 */
-void lire_fichier(const char* nomFichier){
+void lire_fichier(const char* nomFichier,tableau_t* t){
 	FILE * file;
 	file=fopen(nomFichier,"r");
-	char ** tab;
 	int n=nbColonne(nomFichier);
 	int m=nbLigne(nomFichier);
-	tab=allouer_tab_2D(n,m);
 	char c;
 	if(file==NULL){
 		perror("Erreur dans l'ouverture du fichier");
@@ -96,18 +94,17 @@ void lire_fichier(const char* nomFichier){
 			c=fgetc(file);
 			while(c!='\n'){ //pas à la fin de la ligne
 				for(int j=0; j<n;j++){
-					tab[i][j]=c;
+					t->tab[i][j]=c;
 					c=fgetc(file);
 				}
 			}	
 		}
 		fclose(file);
-		//return tab;
 	}
 }
 
 /**écrit le tableau dans le fichier*/
-void ecrire_fichier(const char* nomFichier, char** tab, int n, int m){
+void ecrire_fichier(const char* nomFichier, tableau_t* t, int n, int m){
 	FILE* file;
 	file=fopen(nomFichier,"w");
 	if(file==NULL){
@@ -116,7 +113,7 @@ void ecrire_fichier(const char* nomFichier, char** tab, int n, int m){
 		int j=0;
 		for(int i=0;i<n;i++){
 			while(j<m){
-				fputc(tab[i][j],file);
+				fputc(t->tab[i][j],file);
 				if(ferror(file)){
 					perror("Erreur dans l'écriture du fichier.\n");
 				}

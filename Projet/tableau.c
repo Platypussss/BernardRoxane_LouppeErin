@@ -4,12 +4,27 @@
 #include <stdbool.h>
 #include "tableau.h"
 
+/**initialisation structure*/
+void init_struct(tableau_t* t,int n,int m){
+	t->tab=(char**)malloc(n*sizeof(char *));
+	for(int i=0;i<n;i++){
+		t->tab[i]=malloc(m*sizeof(char));
+	}
+	
+	//remplissage tableau
+	for(int i=0;i<n;i++){
+		for(int j=0;j<m;j++){
+			t->tab[i][j]=' ';
+		}
+	}
+}
+
 /**alloue un tableau de caractère de taille n*m
 *m nombre de lignes
 *n nb de colonnes
 *initialisé avec le caractère " "
 */
-char** allouer_tab_2D(int n, int m){
+/*char** allouer_tab_2D(int n, int m){
 	//allocation mémoire
 	char** tab=(char**)malloc(n*sizeof(char *));
 	for(int i=0;i<n;i++){
@@ -23,27 +38,27 @@ char** allouer_tab_2D(int n, int m){
 		}
 	}
 	return tab;	
-}
+}*/
 
 /**désalloue la mémoire du tableau
 *n nombre de colonnes
 */
-void desallouer_tab_2D(char** tab,int n){
+void desallouer_tab_2D(tableau_t* t,int n){
 	for(int i=0;i<n;i++){
-		free(tab[i]);
+		free(t->tab[i]);
 	}
-	free(tab);	
+	free(t->tab);	
 }
 
 /**affiche le contenu du tableau
 *m nombre de  lignes
 *n nombre de colonnes
 */
-void afficher_tab_2D(char** tab,int n,int m){
+void afficher_tab_2D(tableau_t* t,int n,int m){
 	char c;
 	for(int i=0;i<n;i++){
 		for(int j=0;j<m;j++){
-			c=tab[i][j];
+			c=t->tab[i][j];
 			printf(" %c ",c);
 		}
 		putchar('\n');
@@ -51,19 +66,13 @@ void afficher_tab_2D(char** tab,int n,int m){
 }
 
 /**retourne un nouveau tableau avec le caractère ancien remplacé par le nouveau*/
-char** modifier_caractere(char** tab, int n,int m,char ancien,char nouveau){
-	char** tab_bis;
-	tab_bis=allouer_tab_2D(n,m);
+void modifier_caractere(tableau_t* t, int n,int m,char ancien,char nouveau){
 	for(int i=0;i<n;i++){
 		for(int j=0;j<m;j++){
-			if(tab[i][j]==ancien){
-				tab_bis[i][j]=nouveau;
-			}else{
-				tab_bis[i][j]=tab[i][j];
+			if(t->tab[i][j]==ancien){
+				t->tab[i][j]=nouveau;
 			}
 		}
 	}
-	desallouer_tab_2D(tab,n);
-	return tab_bis;
 }
 

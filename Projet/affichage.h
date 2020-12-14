@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 1000
 
 struct textures_s{
     SDL_Texture* fond;
@@ -16,6 +18,7 @@ typedef struct textures_s textures_t;
 /**
  * \brief Type qui correspond aux textures du jeu
  */
+
 
 /**
 * \brief charge une image et retourne la surface de texture associée

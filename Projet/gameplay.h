@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define NB_MURS 20
+
+/**
+ * \brief Type qui correspond au joueur du jeu
+ */
 struct joueur_s{
 	int x;
 	int y;
@@ -13,11 +18,11 @@ struct joueur_s{
 	int w;
 };
 typedef struct joueur_s joueur_t;
+
+
 /**
- * \brief Type qui correspond au joueur du jeu
+ * \brief Type qui correspond aux murs du jeu
  */
-
-
 struct mur_s{
 	int x;
 	int y;
@@ -25,10 +30,12 @@ struct mur_s{
 	int w;
 };
 typedef struct mur_s mur_t;
-/**
- * \brief Type qui correspond aux murs du jeu
- */
 
+struct tab_s{
+	int x[NB_MURS];
+	int y[NB_MURS];
+};
+typedef struct tab_s tab_t;
 
 /**
 * \brief initialise les données du joueur
@@ -112,4 +119,8 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,m
 */
 int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur,int sens);
 
+
+void init_murs(tab_t *murs);
+
+void lire_fichier_mur(const char* nomfichier,tab_t *murs);
 #endif

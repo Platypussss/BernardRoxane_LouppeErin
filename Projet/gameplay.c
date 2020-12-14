@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include "gameplay.h"
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 640
 
 /**
 * \brief initialise les données du joueur
@@ -220,6 +218,35 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 	}
 	return 3;
+}
+
+void init_murs(tab_t *murs){
+	
+	for(int i=0;i<NB_MURS;i++){
+		murs->x[i]=-100;
+		murs->y[i]=-100;
+	}
+}
+
+void lire_fichier_mur(const char* nomfichier,tab_t *murs){
+	FILE* file;
+	file=fopen(nomfichier,"r");
+	int i=0;
+	int x=0;
+	int y=0;
+	char c;
+	while((c=fgetc(file))!=EOF){	//pas à la fin du fichier
+			if(c=='\n'){
+				y=y+100;
+			}				
+			if(c=='1'){ 	//1 correspond à un mur
+				murs->x[i]=x;
+				murs->y[i]=y;
+				i++;	
+			}
+			x=x+100;	
+	}
+	fclose(file);	
 }
 
 /**ne pas changer la hauteur quand on saute sur le mur

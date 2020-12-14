@@ -4,28 +4,18 @@
 #include <stdbool.h>
 #include "fichiers.c"
 
-int main(){
-	int x=3; int y=2;
-	char** tab; char** tab1;
+
+int main(int argc, char *argv[]){
+
+	tableau_t t;
+	init_struct(&t,4,8);	//premier paramètre c'est le nb de lignes
+	lire_fichier("file.txt",&t);
+	afficher_tab_2D(&t,4,8);
+	/*modifier_caractere(&t,2,4,'k','j');
+	afficher_tab_2D(&t,2,4);
+	desallouer_tab_2D(&t,2);*/
 	
-	/*//Tests sur les tableaux
-	tab=allouer_tab_2D(x,y);
-	tab1=allouer_tab_2D(x,y);
-	afficher_tab_2D(tab,x,y);
-	tab1=modifier_caractere(tab,x,y,' ','a');
-	afficher_tab_2D(tab1,x,y);*/
 	
-	/*//Test sur les fichiers
-	int ligne; int colonne;
-	ligne=nbLigne("file.txt");
-	colonne=nbColonne("file.txt");
-	afficher_taille_fichier("file.txt");
-	ecrire_fichier("file.txt",tab1,x,y);
-	afficher_taille_fichier("file.txt");*/
-	char** t;
-	t=allouer_tab_2D(x,y);
-	//afficher_tab_2D(t,x,y);
-	lire_fichier("file.txt");
-	//afficher_tab_2D(t,x,y);
+	
 	return EXIT_SUCCESS;
 }

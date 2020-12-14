@@ -15,7 +15,7 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 	}
 	// Créer la fenêtre
-	fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_RESIZABLE);
+	fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
 	if(fenetre == NULL){ // En cas d’erreur
 		printf("Erreur de la creation d’une fenetre: %s",SDL_GetError());SDL_Quit();
 		return EXIT_FAILURE;
@@ -32,12 +32,16 @@ int main(int argc, char *argv[]){
 	textures.murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
 	
 	
+
 	joueur_t joueur;
 	init_joueur(&joueur,0,425,100,100);
 
 	mur_t mur;
-	init_mur(&mur,200,480,50,50);
+	//init_mur(&mur,200,480,50,50);
 
+	tab_t tab_murs;
+	init_murs(&tab_murs);
+	lire_fichier_mur("file.txt",&tab_murs);
 
 	int tmp=1;
 	int sens=tmp;//1 droite,2 gauche,3 saut,4 bas*/
@@ -48,7 +52,13 @@ int main(int argc, char *argv[]){
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,textures.fond,NULL,NULL);
 		apply_texture(textures.perso,ecran,joueur.x,joueur.y);
-		apply_texture(textures.murtoutseul,ecran,mur.x,mur.y);
+		int x;int y;
+		for(int i=0;i<NB_MURS;i++){	//faire ça dans une fonction
+			x=tab_murs.x[i];
+			y=tab_murs.x[i];
+			apply_texture(textures.murtoutseul,ecran,x,y);
+		}
+		
 		SDL_RenderPresent(ecran);
 		sens=tmp;
 		while( SDL_PollEvent(&evenements ) )

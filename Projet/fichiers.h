@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "tableau.c"
 
 
 /**Compte le nombre de lignes du fichier*/
@@ -16,7 +17,7 @@ void afficher_taille_fichier(const char* nomFichier);
 /**lit un fichier dont le nomestnomFichier
 *retourne le tableau qui contient les caractères du fichier tel qu’une ligne du tableau *correspond à une ligne du fichier.
 */
-void lire_fichier(const char* nomFichier);
+void lire_fichier(const char* nomFichier,tableau_t* t);
 
 /**écrit le tableau dans le fichier*/
-void ecrire_fichier(const char* nomFichier, char** tab, int n, int m);
+void ecrire_fichier(const char* nomFichier, tableau_t* t, int n, int m);
