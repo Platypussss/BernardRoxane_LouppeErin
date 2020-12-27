@@ -39,12 +39,12 @@ int main(int argc, char *argv[]){
 	mur_t mur;
 	//init_mur(&mur,200,480,50,50);
 
-	tab_t tab_murs;
-	init_murs(&tab_murs);
-	lire_fichier_mur("file.txt",&tab_murs);
-
+	tab_t tab;
+	init_murs(&tab);
+	lire_fichier_mur("file.txt",&tab);	//moifie les coordonnées des murs en fonction du fichier txt
+	
 	int tmp=1;
-	int sens=tmp;//1 droite,2 gauche,3 saut,4 bas*/
+	int sens=tmp;	//détermine quel sprite appliquer selon l'orientation du personnage
 	
 	// Boucle principale
 	while(!terminer){
@@ -52,13 +52,10 @@ int main(int argc, char *argv[]){
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,textures.fond,NULL,NULL);
 		apply_texture(textures.perso,ecran,joueur.x,joueur.y);
-		int x;int y;
-		for(int i=0;i<NB_MURS;i++){	//faire ça dans une fonction
-			x=tab_murs.x[i];
-			y=tab_murs.x[i];
-			apply_texture(textures.murtoutseul,ecran,x,y);
+		for(int i=0;i<NB_MURS;i++){	
+			apply_texture(textures.murtoutseul,ecran,tab.tab_mur[i]->x,tab.tab_mur[i]->y);
 		}
-		
+		//apply_tab_mur(textures.murtoutseul,ecran,&tab);
 		SDL_RenderPresent(ecran);
 		sens=tmp;
 		while( SDL_PollEvent(&evenements ) )
@@ -89,7 +86,7 @@ int main(int argc, char *argv[]){
 					break;
 				case SDLK_SPACE:
 					tmp=sens;
-					sens=saut(&textures,ecran,&joueur,&mur,sens);
+					sens=saut(&textures,ecran,&joueur,&mur,sens,&tab);
 					break;
 			}
 		}

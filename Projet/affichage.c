@@ -6,6 +6,7 @@
 #include "fichiers.c"
 
 
+
 /**
 * \brief charge une image et retourne la surface de texture associée
 * \param nomfichier l'image associée
