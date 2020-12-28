@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
 	textures.murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
 	
 	
-	mur_t mur;
+	
 	joueur_t joueur;
 	init_joueur(&joueur,0,425,100,100);
 
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]){
 					break;
 				case SDLK_SPACE:
 					tmp=sens;
-					sens=saut(&textures,ecran,&joueur,&mur,sens,&tab);
+					sens=saut(&textures,ecran,&joueur,sens,&tab);
 					break;
 			}
 		}

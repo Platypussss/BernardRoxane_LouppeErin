@@ -78,7 +78,7 @@ int est_en_collision(joueur_t* joueur,mur_t* mur,int sens);
 * \param m le mur 
 * \return 1 si le joueur se trouve sur un mur
 */
-int est_sur_mur(joueur_t* j,mur_t* m,int sens);
+int est_sur_mur(joueur_t* j,mur_t* m);
 
 /**
 * \brief bouge le perso vers le haut
@@ -125,11 +125,11 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
 * \param joueur le joueur qui bouge
-* \param mur en potentiel collision avec le joueur
 * \param sens du joueur 
+* \param tab le tableau de mur en potentiel collision avec le joueur
 * \return l'orientation du perso
 */
-int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur,int sens,tab_t *tab);
+int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,tab_t *tab);
 
 /**
 * \brief fonction qui modifie les coordonnées de tous les murs en fonction des caractères du fichier

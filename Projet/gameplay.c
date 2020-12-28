@@ -77,11 +77,13 @@ int est_en_collision(joueur_t* j,mur_t* m,int sens){
 * \param m le mur 
 * \return 1 si le joueur se trouve sur un mur
 */
-int est_sur_mur(joueur_t* joueur,mur_t* mur,int sens){
+int est_sur_mur(joueur_t* joueur,mur_t* mur){
 	int x_j=(joueur->x)+(joueur->w)/2;
 	int x1_m=(mur->x)-(mur->w)/2;
 	int x2_m=(mur->x)+(mur->w)/2;
-	if(x1_m<=x_j && x2_m>=x_j){	//le joueur se trouve entre les extremités du mur
+	int y_j=(joueur->y);
+	int y_m=(mur->y);
+	if(x1_m<=x_j && x2_m>=x_j && y_j<=y_m){	//le joueur se trouve entre les extremités du mur
 		return 1;
 	}
 	return 0;
@@ -157,9 +159,9 @@ int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 			//est en collision, on ne bouge pas
 			joueur->x=(joueur->x)+5;
 		}
-		/*if(1==est_sur_mur(joueur,tab->tab_mur[i],sens)){
-				joueur->y=tab->tab_mur[i]->y;
-		}	*/
+		if(0==est_sur_mur(joueur,tab->tab_mur[i])){
+				joueur->y=425;
+		}
 	}
 	
 	limite_horizontale(joueur);
@@ -191,9 +193,9 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 			//est en collision, on ne bouge pas
 			joueur->x=(joueur->x)-5;
 		}
-		/*if(1==est_sur_mur(joueur,tab->tab_mur[i],sens)){
-				joueur->y=tab->tab_mur[i]->y;
-		}*/	
+		if(0==est_sur_mur(joueur,tab->tab_mur[i])){
+				joueur->y=425;
+		}
 	}
 	limite_horizontale(joueur);
 	return s;
@@ -205,11 +207,11 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
 * \param joueur le joueur qui bouge
-* \param mur en potentiel collision avec le joueur
-* \param sens du joueur,permet de changer de sprite
+* \param sens du joueur,permet de changer de sprite 
+*\param tab le tableau de mur en potentiel collision avec le joueur
 * \return l'orientation du perso
 */
-int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur,int sens,tab_t *tab){
+int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,tab_t *tab){
 
 	if(sens==1 || sens==4){		//saute vers la droite
 		joueur->y=(joueur->y)-50;
@@ -224,14 +226,21 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur
 		}
 		SDL_RenderPresent(renderer);
 		SDL_Delay(200);
-		
-		if(1==est_sur_mur(joueur,mur,sens)){
+		for(int i=0;i<NB_MURS;i++){
+			if(1==est_sur_mur(joueur,tab->tab_mur[i])){
+					joueur->y=(joueur->y)+(tab->tab_mur[i]->h);
+					//joueur->y=(tab->tab_mur[i]->y)-(tab->tab_mur[i]->h);
+			}else{
+				joueur->y=425;
+			}
+		}	
+		/*if(1==est_sur_mur(joueur,mur,sens)){
 			joueur->y=(joueur->y)-(mur->h)+60;
 		}else if(0==est_sur_mur(joueur,mur,sens)){
 			joueur->y=425;
 		}else{
 			joueur->y=(joueur->y)+50;
-		}
+		}*/
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
 	}else{		//saute vers la gauche
 		joueur->y=(joueur->y)-50;
@@ -247,13 +256,21 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur
 		SDL_RenderPresent(renderer);
 		SDL_Delay(200);
 
-		if(1==est_sur_mur(joueur,mur,sens)){
+		for(int i=0;i<NB_MURS;i++){
+			if(1==est_sur_mur(joueur,tab->tab_mur[i])){
+					joueur->y=(joueur->y)+(tab->tab_mur[i]->h);
+					//joueur->y=(tab->tab_mur[i]->y)-(tab->tab_mur[i]->h);
+			}else{
+				joueur->y=425;
+			}
+		}
+		/*if(1==est_sur_mur(joueur,mur,sens)){
 			joueur->y=(joueur->y)-(mur->h)+60;
 		}else if(0==est_sur_mur(joueur,mur,sens)){
 			joueur->y=425;
 		}else{
 			joueur->y=(joueur->y)+50;
-		}
+		}*/
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 	}
 	limite_horizontale(joueur);
