@@ -32,13 +32,11 @@ int main(int argc, char *argv[]){
 	textures.murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
 	
 	
-
+	mur_t mur;
 	joueur_t joueur;
 	init_joueur(&joueur,0,425,100,100);
 
-	mur_t mur;
-	//init_mur(&mur,200,480,50,50);
-
+	
 	tab_t tab;
 	init_murs(&tab);
 	lire_fichier_mur("file.txt",&tab);	//moifie les coordonnées des murs en fonction du fichier txt
@@ -69,19 +67,19 @@ int main(int argc, char *argv[]){
 					terminer = true;  
 					break;
 				case SDLK_UP:
-					sens=bouger_haut(&textures,ecran,sens);
+					sens=bouger_haut(&textures,ecran,sens,&joueur);
 					tmp=sens;
 					break;
 				case SDLK_DOWN:
-					sens=bouger_bas(&textures,ecran,sens);
+					sens=bouger_bas(&textures,ecran,sens,&joueur);
 					tmp=sens;
 					break;
 				case SDLK_LEFT:
-					sens=bouger_gauche(&textures,ecran,&joueur,&mur,sens);
+					sens=bouger_gauche(&textures,ecran,&joueur,&tab,sens);
 					tmp=sens;
 					break;
 				case SDLK_RIGHT:
-					sens=bouger_droite(&textures,ecran,&joueur,&mur,sens);
+					sens=bouger_droite(&textures,ecran,&joueur,&tab,sens);
 					tmp=sens;
 					break;
 				case SDLK_SPACE:

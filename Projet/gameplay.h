@@ -7,7 +7,7 @@
 #include <stdbool.h>
 //#include "affichage.c"
 
-#define NB_MURS 20
+#define NB_MURS 100
 
 /**
  * \brief Type qui correspond au joueur du jeu
@@ -70,7 +70,7 @@ void init_murs(tab_t *murs);
 * \param m le mur
 * \return 1 s'il y a une collision
 */
-int est_en_collision_mur(joueur_t* joueur,mur_t* mur,int sens);
+int est_en_collision(joueur_t* joueur,mur_t* mur,int sens);
 
 /**
 * \brief détecte si le joueur se trouve sur un mur
@@ -87,7 +87,7 @@ int est_sur_mur(joueur_t* j,mur_t* m,int sens);
 * \param sens du joueur,permet de changer de sprite
 * \return l'orientation du perso
 */
-int bouger_haut(textures_t* textures,SDL_Renderer* renderer,int sens);
+int bouger_haut(textures_t* textures,SDL_Renderer* renderer,int sens,joueur_t *joueur);
 
 /**
 * \brief bouge le perso vers le bas
@@ -96,7 +96,7 @@ int bouger_haut(textures_t* textures,SDL_Renderer* renderer,int sens);
 * \param sens du joueur,permet de changer de sprite
 * \return l'orientation du perso
 */
-int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens);
+int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens,joueur_t *joueur);
 
 /**
 * \brief bouge le perso vers la gauche
@@ -107,18 +107,18 @@ int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens);
 * \param sens du joueur,permet de changer de sprite
 * \return l'orientation du perso
 */
-int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur,int sens);
+int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,tab_t *tab,int sens);
 
 /**
 * \brief bouge le perso vers la droite
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
 * \param joueur le joueur qui bouge
-* \param mur en potentiel collision avec le joueur
+* \param tab le tableau de mur en potentiel collision avec le joueur
 * \param sens du joueur,permet de changer de sprite
 * \return l'orientation du perso
 */
-int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,mur_t* mur,int sens);
+int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,tab_t *tab,int sens);
 
 /**
 * \brief fait sauter le perso
@@ -144,4 +144,5 @@ void lire_fichier_mur(const char* nomfichier,tab_t *murs);
 * \param j le personnage qui bouge 
 */
 void limite_horizontale(joueur_t *j);
+
 #endif
