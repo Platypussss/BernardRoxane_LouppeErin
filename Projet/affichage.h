@@ -14,6 +14,7 @@ struct textures_s{
     SDL_Texture* fond;
     SDL_Texture* perso;
     SDL_Texture* murtoutseul;
+    SDL_Texture* ennemi;
 };
 typedef struct textures_s textures_t;
 /**

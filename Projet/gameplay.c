@@ -18,6 +18,8 @@ void init_joueur(joueur_t* j,int a,int b,int c,int d){
 	j->y=b;
 	j->h=c;
 	j->w=d;
+	j->missile=malloc(sizeof(arme_t));
+	init_arme(j->missile,10,10,10,10,0);
 }
 
 /**
@@ -37,13 +39,13 @@ void init_mur(mur_t* m, int a, int b,int c,int d){
 
 /**
 * \brief initialise l'ensemble de tous les murs
-* \param murs le tableau de mur_t
+* \param tab le tableau de mur_t et d'ennemis
 */
-void init_murs(tab_t *murs){
+void init_map(tab_t *tab){
 	
 	for(int i=0;i<NB_MURS;i++){
-		murs->tab_mur[i]=malloc(sizeof(mur_t));
-		init_mur(murs->tab_mur[i],-50,-50,50,50);
+		tab->tab_mur[i]=malloc(sizeof(mur_t));
+		init_mur(tab->tab_mur[i],-50,-50,50,50);
 	}
 }
 
@@ -60,10 +62,10 @@ int est_en_collision(joueur_t* j,mur_t* m,int sens){
 	int x3=(m->x)-(m->w)/2;
 	//printf("%d\n",j->y-j->h);
 	if((j->y)-(j->h)<=(m->y)-(m->h)){
-		if(x2==x3 && (sens==2 || sens==5) /*&& y_j<=y_m*/){	//en collision avec le côté gauche du mur
+		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté gauche du mur
 			return 1;
 		}
-		if(x==x1 && (sens==1 || sens==4) /*&& y_j<=y_m*/){	//en collision avec le côté droit du mur
+		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté droit du mur
 			return 1;
 		}
 	}
@@ -78,14 +80,7 @@ int est_en_collision(joueur_t* j,mur_t* m,int sens){
 * \return 1 si le joueur se trouve sur un mur
 */
 int est_sur_mur(joueur_t* joueur,mur_t* mur){
-	int x_j=(joueur->x)+(joueur->w)/2;
-	int x1_m=(mur->x)-(mur->w)/2;
-	int x2_m=(mur->x)+(mur->w)/2;
-	int y_j=(joueur->y);
-	int y_m=(mur->y);
-	if(x1_m<=x_j && x2_m>=x_j && y_j<=y_m){	//le joueur se trouve entre les extremités du mur
-		return 1;
-	}
+	
 	return 0;
 }
 
@@ -228,7 +223,8 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 		SDL_Delay(200);
 		for(int i=0;i<NB_MURS;i++){
 			if(1==est_sur_mur(joueur,tab->tab_mur[i])){
-					joueur->y=(joueur->y)+(tab->tab_mur[i]->h);
+					joueur->y=20;
+					//joueur->y=(joueur->y)+(tab->tab_mur[i]->h);
 					//joueur->y=(tab->tab_mur[i]->y)-(tab->tab_mur[i]->h);
 			}else{
 				joueur->y=425;
@@ -258,7 +254,8 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 
 		for(int i=0;i<NB_MURS;i++){
 			if(1==est_sur_mur(joueur,tab->tab_mur[i])){
-					joueur->y=(joueur->y)+(tab->tab_mur[i]->h);
+					joueur->y=20;
+					//joueur->y=(joueur->y)+(tab->tab_mur[i]->h);
 					//joueur->y=(tab->tab_mur[i]->y)-(tab->tab_mur[i]->h);
 			}else{
 				joueur->y=425;
@@ -291,11 +288,11 @@ void lire_fichier_mur(const char* nomfichier,tab_t *tab){
 	char c;
 	while((c=fgetc(file))!=EOF){	//pas à la fin du fichier
 			if(c=='\n'){
-				b=b+100;
-				a=0;
+				b=b+50;	//change de ligne
+				a=0;	//evient au début de la ligne
 			}				
-			if(c=='a'){ 	//1 correspond à un mur
-			
+			if(c=='m'){ 	//m correspond à un mur
+				//mets les coordonnées du mur en fonction de la position du a dans le fichier
 				tab->tab_mur[i]->x=a;
 				tab->tab_mur[i]->y=b;
 				i++;	

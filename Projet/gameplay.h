@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-//#include "affichage.c"
+#include "arme.c"
 
 #define NB_MURS 100
 
@@ -17,6 +17,7 @@ struct joueur_s{
 	int y;
 	int h;
 	int w;
+	arme_t *missile;
 };
 typedef struct joueur_s joueur_t;
 
@@ -60,9 +61,9 @@ void init_mur(mur_t* m,int a,int b,int c,int d);
 
 /**
 * \brief initialise l'ensemble de tous les murs
-* \param murs le tableau de mur_t
+* \param tab le tableau de mur_t et d'ennemis
 */
-void init_murs(tab_t *murs);
+void init_map(tab_t *tab);
 
 /**
 * \brief détecte les collisions avec le joueur et les murs

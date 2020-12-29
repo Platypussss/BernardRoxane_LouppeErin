@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
 	textures.fond=charger_image("ressources/fond1.bmp",ecran);
 	textures.perso=charger_image("ressources/marche1.bmp",ecran);
 	textures.murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
-	
+	textures.ennemi=charger_image("ressources/perso1.bmp",ecran);
 	
 	
 	joueur_t joueur;
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 
 	
 	tab_t tab;
-	init_murs(&tab);
+	init_map(&tab);
 	lire_fichier_mur("file.txt",&tab);	//moifie les coordonnées des murs en fonction du fichier txt
 	
 	int tmp=1;
@@ -87,6 +87,13 @@ int main(int argc, char *argv[]){
 					sens=saut(&textures,ecran,&joueur,sens,&tab);
 					break;
 			}
+			case SDL_MOUSEBUTTONUP:
+				switch(evenements.button.button){
+					case SDL_BUTTON_LEFT:
+						set_est_visible(joueur.missile,1);
+						printf("est visible:%d\n",get_est_visible(joueur.missile));
+						break;
+				}
 		}
 	}
 	//Libérer de la mémoire
