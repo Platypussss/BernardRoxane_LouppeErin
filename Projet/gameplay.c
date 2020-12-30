@@ -23,6 +23,22 @@ void init_joueur(joueur_t* j,int a,int b,int c,int d){
 }
 
 /**
+* \brief initialise les données d'un ennemi
+* \param e l'ennemi
+* \param a l'abscisse de l'ennemi
+* \param b l'ordonnée de l'ennemi
+* \param c la hauteur de l'ennemi
+* \param d la largeur de l'ennemi
+*/
+void init_ennemi(ennemi_t* e,int a,int b,int c,int d){
+	e->x=a;
+	e->y=b;
+	e->h=c;
+	e->w=d;
+}
+
+
+/**
 * \brief initialise les données du mur
 * \param m le mur
 * \param a l'abscisse du mur
@@ -47,6 +63,28 @@ void init_map(tab_t *tab){
 		tab->tab_mur[i]=malloc(sizeof(mur_t));
 		init_mur(tab->tab_mur[i],-50,-50,50,50);
 	}
+}
+
+/**
+* \brief détecte les collisions avec le joueur et les ennemis
+* \param j le joueur
+* \param e le mur
+* \return 1 s'il y a une collision
+*/
+int est_en_collision_ennemi(joueur_t* j,ennemi_t* e,int sens){
+	int x=(j->x)+(j->w)/2;
+	int x1=(e->x)-(e->w)/2;
+	int x2=(j->x)-(j->w)/2;
+	int x3=(e->x)-(e->w)/2;
+	if((j->y)-(j->h)<=(e->y)-(e->h)){
+		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté gauche de l'ennemi
+			return 1;
+		}
+		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté droit de l'ennemi
+			return 1;
+		}
+	}
+	return 0;
 }
 
 /**
