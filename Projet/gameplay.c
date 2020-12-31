@@ -5,6 +5,28 @@
 #include "gameplay.h"
 
 /**
+* \brief détecte les collisions avec le joueur et les ennemis
+* \param j le joueur
+* \param e le mur
+* \return 1 s'il y a une collision
+*/
+int est_en_collision_ennemi(joueur_t* j,ennemi_t* e,int sens){
+	int x=(j->x)+(j->w)/2;
+	int x1=(e->x)-(e->w)/2;
+	int x2=(j->x)-(j->w)/2;
+	int x3=(e->x)-(e->w)/2;
+	if((j->y)-(j->h)<=(e->y)-(e->h)){
+		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté gauche de l'ennemi
+			return 1;
+		}
+		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté droit de l'ennemi
+			return 1;
+		}
+	}
+	return 0;
+}
+
+/**
 * \brief détecte les collisions avec le joueur et les murs
 * \param j le joueur
 * \param m le mur
