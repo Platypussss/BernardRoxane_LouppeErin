@@ -32,35 +32,40 @@ int main(int argc, char *argv[]){
 	textures.murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
 	textures.ennemi=charger_image("ressources/perso1.bmp",ecran);
 	
-	
+	//initialisation
 	joueur_t joueur;
 	init_joueur(&joueur,0,425,100,100);
 
-	
 	tab_t tab;
 	init_map(&tab);
-	lire_fichier_mur("file.txt",&tab);	//moifie les coordonnées des murs en fonction du fichier txt
+	lire_fichier("file.txt",&tab);	//moifie les coordonnées des murs en fonction du fichier txt
 	
 	int tmp=1;
-	int sens=tmp;	//détermine quel sprite appliquer selon l'orientation du personnage
+	int sens=tmp;	//détermine quel sprite appliquer selon l'orientation du personnage ex:1->droite,2->gauche,3->saut...
 	
 	// Boucle principale
 	while(!terminer){
 		
+		//appliquer les textures sur l'écran
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,textures.fond,NULL,NULL);
 		apply_texture(textures.perso,ecran,joueur.x,joueur.y);
 		for(int i=0;i<NB_MURS;i++){	
 			apply_texture(textures.murtoutseul,ecran,tab.tab_mur[i]->x,tab.tab_mur[i]->y);
 		}
-		//apply_tab_mur(textures.murtoutseul,ecran,&tab);
+		for(int i=0;i<NB_ENNEMIS;i++){	
+			apply_texture(textures.ennemi,ecran,tab.tab_ennemi[i]->x,tab.tab_ennemi[i]->y);
+		}
 		SDL_RenderPresent(ecran);
 		sens=tmp;
+		//boucle qui gère les évenements
 		while( SDL_PollEvent(&evenements ) )
+		
 		switch(evenements.type){
 			case SDL_QUIT:
 				terminer = true; 
 				break;
+			//évenements clavier
 			case SDL_KEYDOWN:
 			switch(evenements.key.keysym.sym){
 				case SDLK_q:
@@ -87,6 +92,7 @@ int main(int argc, char *argv[]){
 					sens=saut(&textures,ecran,&joueur,sens,&tab);
 					break;
 			}
+			//évenements souris
 			case SDL_MOUSEBUTTONUP:
 				switch(evenements.button.button){
 					case SDL_BUTTON_LEFT:
@@ -97,8 +103,11 @@ int main(int argc, char *argv[]){
 		}
 	}
 	//Libérer de la mémoire
+	clean_joueur(&joueur);
+	clean_map(&tab);
 	SDL_DestroyTexture(textures.fond);
 	SDL_DestroyRenderer(ecran);
+
 	// Quitter SDL
 	SDL_DestroyWindow(fenetre);
 	SDL_Quit();

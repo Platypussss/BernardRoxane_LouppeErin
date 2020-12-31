@@ -5,65 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "arme.c"
-
-#define NB_MURS 100
-
-/**
- * \brief Type qui correspond au joueur du jeu
- */
-struct joueur_s{
-	int x;
-	int y;
-	int h;
-	int w;
-	arme_t *missile;
-};
-typedef struct joueur_s joueur_t;
-
-
-/**
- * \brief Type qui correspond aux murs du jeu
- */
-struct mur_s{
-	int x;
-	int y;
-	int h;
-	int w;
-};
-typedef struct mur_s mur_t;
-
-struct tab_s{
-	mur_t *tab_mur[NB_MURS];
-};
-typedef struct tab_s tab_t;
-
-/**
-* \brief initialise les données du joueur
-* \param j le joueur
-* \param a l'abscisse du joueur
-* \param b l'ordonnée du joueur
-* \param c la hauteur du joueur
-* \param d la largeur du joueur
-*/
-void init_joueur(joueur_t* j,int a,int b,int c,int d);
-
-
-/**
-* \brief initialise les données d'un mur
-* \param m le mur
-* \param a l'abscisse du mur
-* \param b l'ordonnée du mur
-* \param c la hauteur du mur
-* \param d la largeur du mur
-*/
-void init_mur(mur_t* m,int a,int b,int c,int d);
-
-/**
-* \brief initialise l'ensemble de tous les murs
-* \param tab le tableau de mur_t et d'ennemis
-*/
-void init_map(tab_t *tab);
+#include "joueur.c"
+#include "map.c"
 
 /**
 * \brief détecte les collisions avec le joueur et les murs
@@ -133,11 +76,11 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,tab_t *tab);
 
 /**
-* \brief fonction qui modifie les coordonnées de tous les murs en fonction des caractères du fichier
+* \brief fonction qui modifie les coordonnées de tous les murs et ennemis en fonction des caractères du fichier
 * \param nomfichier le fichier représentant le fond avec les murs
 * \param tab le tableau de mur_t
 */
-void lire_fichier_mur(const char* nomfichier,tab_t *murs);
+void lire_fichier(const char* nomfichier,tab_t *tab);
 
 
 /**

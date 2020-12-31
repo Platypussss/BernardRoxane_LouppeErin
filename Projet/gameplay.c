@@ -4,51 +4,6 @@
 #include <stdbool.h>
 #include "gameplay.h"
 
-
-/**
-* \brief initialise les données du joueur
-* \param j le joueur
-* \param a l'abscisse du joueur
-* \param b l'ordonnée du joueur
-* \param c la hauteur du joueur
-* \param d la largeur du joueur
-*/
-void init_joueur(joueur_t* j,int a,int b,int c,int d){
-	j->x=a;
-	j->y=b;
-	j->h=c;
-	j->w=d;
-	j->missile=malloc(sizeof(arme_t));
-	init_arme(j->missile,10,10,10,10,0);
-}
-
-/**
-* \brief initialise les données du mur
-* \param m le mur
-* \param a l'abscisse du mur
-* \param b l'ordonnée du mur
-* \param c la hauteur du mur
-* \param d la largeur du mur
-*/
-void init_mur(mur_t* m, int a, int b,int c,int d){
-	m->x=a;
-	m->y=b;
-	m->h=c;
-	m->w=d;
-}
-
-/**
-* \brief initialise l'ensemble de tous les murs
-* \param tab le tableau de mur_t et d'ennemis
-*/
-void init_map(tab_t *tab){
-	
-	for(int i=0;i<NB_MURS;i++){
-		tab->tab_mur[i]=malloc(sizeof(mur_t));
-		init_mur(tab->tab_mur[i],-50,-50,50,50);
-	}
-}
-
 /**
 * \brief détecte les collisions avec le joueur et les murs
 * \param j le joueur
@@ -60,7 +15,6 @@ int est_en_collision(joueur_t* j,mur_t* m,int sens){
 	int x1=(m->x)-(m->w)/2;
 	int x2=(j->x)-(j->w)/2;
 	int x3=(m->x)-(m->w)/2;
-	//printf("%d\n",j->y-j->h);
 	if((j->y)-(j->h)<=(m->y)-(m->h)){
 		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté gauche du mur
 			return 1;
@@ -211,16 +165,24 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 	if(sens==1 || sens==4){		//saute vers la droite
 		joueur->y=(joueur->y)-50;
 		joueur->x=(joueur->x)+20;
+
+		//change l'apparence du perso
 		textures->murtoutseul=charger_image("ressources/murtoutseul.bmp",renderer);
 		textures->perso=charger_image("ressources/saut.bmp",renderer);
+
+		//applique la nouvelle texture à l'écran
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer,textures->fond,NULL,NULL);
 		apply_texture(textures->perso,renderer,joueur->x,joueur->y);
 		for(int i=0;i<NB_MURS;i++){	
 			apply_texture(textures->murtoutseul,renderer,tab->tab_mur[i]->x,tab->tab_mur[i]->y);
 		}
+		for(int i=0;i<NB_ENNEMIS;i++){	
+			apply_texture(textures->ennemi,renderer,tab->tab_ennemi[i]->x,tab->tab_ennemi[i]->y);
+		}
 		SDL_RenderPresent(renderer);
 		SDL_Delay(200);
+
 		for(int i=0;i<NB_MURS;i++){
 			if(1==est_sur_mur(joueur,tab->tab_mur[i])){
 					joueur->y=20;
@@ -241,13 +203,20 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 	}else{		//saute vers la gauche
 		joueur->y=(joueur->y)-50;
 		joueur->x=(joueur->x)-20;
+
+		//change l'apparence du perso
 		textures->murtoutseul=charger_image("ressources/murtoutseul.bmp",renderer);
 		textures->perso=charger_image("ressources/saut_envers.bmp",renderer);
+
+		//applique la nouvelle texture à l'écran
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer,textures->fond,NULL,NULL);
 		apply_texture(textures->perso,renderer,joueur->x,joueur->y);
 		for(int i=0;i<NB_MURS;i++){	
 			apply_texture(textures->murtoutseul,renderer,tab->tab_mur[i]->x,tab->tab_mur[i]->y);
+		}
+		for(int i=0;i<NB_ENNEMIS;i++){	
+			apply_texture(textures->ennemi,renderer,tab->tab_ennemi[i]->x,tab->tab_ennemi[i]->y);
 		}
 		SDL_RenderPresent(renderer);
 		SDL_Delay(200);
@@ -275,27 +244,34 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 }
 
 /**
-* \brief fonction qui modifie les coordonnées de tous les murs en fonction des caractères du fichier
+* \brief fonction qui modifie les coordonnées de tous les murs et ennemis en fonction des caractères du fichier
 * \param nomfichier le fichier représentant le fond avec les murs
 * \param tab le tableau de mur_t
 */
-void lire_fichier_mur(const char* nomfichier,tab_t *tab){
+void lire_fichier(const char* nomfichier,tab_t *tab){
 	FILE* file;
 	file=fopen(nomfichier,"r");
 	int i=0;
-	int a=0;
-	int b=0;
+	int j=0;
+	int a=0;	//correspond aux abscisses 
+	int b=0;	//correspond aux ordonnées
 	char c;
 	while((c=fgetc(file))!=EOF){	//pas à la fin du fichier
 			if(c=='\n'){
 				b=b+50;	//change de ligne
-				a=0;	//evient au début de la ligne
+				a=0;	//revient au début de la ligne, les x valent 0
 			}				
 			if(c=='m'){ 	//m correspond à un mur
-				//mets les coordonnées du mur en fonction de la position du a dans le fichier
+				//mets les coordonnées du mur en fonction de la position du 'm' dans le fichier
 				tab->tab_mur[i]->x=a;
 				tab->tab_mur[i]->y=b;
 				i++;	
+			}
+			if(c=='e'){ 	//e correspond à un ennemi
+				//mets les coordonnées de l'ennemi en fonction de la position du 'e' dans le fichier
+				tab->tab_ennemi[j]->x=a;
+				tab->tab_ennemi[j]->y=b;
+				j++;	
 			}
 			a=a+50;	
 	}
