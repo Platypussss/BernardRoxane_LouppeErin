@@ -93,13 +93,13 @@ int main(int argc, char *argv[]){
 					break;
 			}
 			//évenements souris
-			case SDL_MOUSEBUTTONUP:
-				switch(evenements.button.button){
-					case SDL_BUTTON_LEFT:
-						set_est_visible(joueur.missile,1);
-						printf("est visible:%d\n",get_est_visible(joueur.missile));
-						break;
-				}
+			/*case SDL_MOUSEBUTTONUP:
+			switch(evenements.button.button){
+				case SDL_BUTTON_LEFT:
+					set_est_visible(joueur.missile,1);
+					//printf("est visible:%d\n",get_est_visible(joueur.missile));
+					break;
+				}*/
 		}
 	}
 	//Libérer de la mémoire

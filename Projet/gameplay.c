@@ -10,7 +10,7 @@
 * \param e le mur
 * \return 1 s'il y a une collision
 */
-int est_en_collision_ennemi(joueur_t* j,ennemi_t* e,int sens){
+/*int est_en_collision_ennemi(joueur_t* j,ennemi_t* e,int sens){
 	int x=(j->x)+(j->w)/2;
 	int x1=(e->x)-(e->w)/2;
 	int x2=(j->x)-(j->w)/2;
@@ -24,7 +24,7 @@ int est_en_collision_ennemi(joueur_t* j,ennemi_t* e,int sens){
 		}
 	}
 	return 0;
-}
+}*/
 
 /**
 * \brief détecte les collisions avec le joueur et les murs
@@ -32,19 +32,33 @@ int est_en_collision_ennemi(joueur_t* j,ennemi_t* e,int sens){
 * \param m le mur
 * \return 1 s'il y a une collision
 */
-int est_en_collision(joueur_t* j,mur_t* m,int sens){
-	int x=(j->x)+(j->w)/2;
-	int x1=(m->x)-(m->w)/2;
-	int x2=(j->x)-(j->w)/2;
-	int x3=(m->x)-(m->w)/2;
+int est_en_collision_mur(joueur_t* j,mur_t* m,int sens){
+	int x=(j->x)+(j->w)/2;	//x du coté droit du joueur
+	int x1=(m->x)-(m->w)/2;	//x du coté gauche du mur
+	int x2=(j->x)-(j->w)/2;	//x du coté gauche du joueur
+	int x3=(m->x)-(m->w)/2;	//x du coté droit du mur
 	if((j->y)-(j->h)<=(m->y)-(m->h)){
-		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté gauche du mur
+		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté droit du mur
 			return 1;
 		}
-		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté droit du mur
+		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté gauche du mur
+			return 1;
+		}
+		
+		//pour le saut:
+		//le perso se trouve entre les deux extremités
+		if(x>x1 && x<x3+(m->w)/2){	
+			return 1;
+		}
+		if(x2<x3 && x2>x1-(m->w)/2){
 			return 1;
 		}
 	}
+	/*int d=((m->x)-(j->y))*((m->x)-(j->x))+((m->y)-(j->y))*((m->y)-(j->y));	//distannce entre les centres des 2 objets
+	int r=((j->w)/2 - (m->h)/2)*((j->w)/2 - (m->h)/2);	//distance max de collision
+	if(d<r){	//en collision
+		return 1;
+	}*/
 	return 0;
 }
 
@@ -55,10 +69,14 @@ int est_en_collision(joueur_t* j,mur_t* m,int sens){
 * \param m le mur 
 * \return 1 si le joueur se trouve sur un mur
 */
-int est_sur_mur(joueur_t* joueur,mur_t* mur){
-	
+/*int est_sur_mur(joueur_t* joueur,mur_t* mur,int sens){
+	int y_j=joueur->y;
+	int y_m=mur->y;
+	if(1==est_en_collision_mur(joueur,mur,sens) && y_j<=y_m && y_j>y_m-joueur->h){
+		return 1;
+	}
 	return 0;
-}
+}*/
 
 /**
 * \brief bouge le perso vers le haut
@@ -126,13 +144,13 @@ int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 	}
 	//test de collision avec tous les murs
 	for(int i=0;i<NB_MURS;i++){
-		if(1==(est_en_collision(joueur,tab->tab_mur[i],sens))){
+		if(1==(est_en_collision_mur(joueur,tab->tab_mur[i],sens))){
 			//est en collision, on ne bouge pas
 			joueur->x=(joueur->x)+5;
 		}
-		if(0==est_sur_mur(joueur,tab->tab_mur[i])){
+		/*if(0==est_sur_mur(joueur,tab->tab_mur[i],sens)){
 				joueur->y=425;
-		}
+		}*/
 	}
 	
 	limite_horizontale(joueur);
@@ -160,13 +178,13 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 		s=1;
 	}	
 	for(int i=0;i<NB_MURS;i++){
-		if(1==(est_en_collision(joueur,tab->tab_mur[i],sens))){
+		if(1==(est_en_collision_mur(joueur,tab->tab_mur[i],sens))){
 			//est en collision, on ne bouge pas
 			joueur->x=(joueur->x)-5;
 		}
-		if(0==est_sur_mur(joueur,tab->tab_mur[i])){
+		/*if(0==est_sur_mur(joueur,tab->tab_mur[i],sens)){
 				joueur->y=425;
-		}
+		}*/
 	}
 	limite_horizontale(joueur);
 	return s;
@@ -183,9 +201,9 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 * \return l'orientation du perso
 */
 int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,tab_t *tab){
-
+	int y_base=joueur->y;
 	if(sens==1 || sens==4){		//saute vers la droite
-		joueur->y=(joueur->y)-50;
+		joueur->y=(joueur->y)-100;
 		joueur->x=(joueur->x)+20;
 
 		//change l'apparence du perso
@@ -206,24 +224,22 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 		SDL_Delay(200);
 
 		for(int i=0;i<NB_MURS;i++){
-			if(1==est_sur_mur(joueur,tab->tab_mur[i])){
-					joueur->y=20;
-					//joueur->y=(joueur->y)+(tab->tab_mur[i]->h);
-					//joueur->y=(tab->tab_mur[i]->y)-(tab->tab_mur[i]->h);
+			/*if(1==est_sur_mur(joueur,tab->tab_mur[i],sens)){
+					joueur->y=(tab->tab_mur[i]->y)-(joueur->h);
 			}else{
-				joueur->y=425;
-			}
+				
+			}*/
+			if(1==(est_en_collision_mur(joueur,tab->tab_mur[i],sens))){
+					//est en collision, on ne bouge pas
+					joueur->x=(joueur->x)-20;
+					joueur->y=(joueur->y)+100;
+				}
 		}	
-		/*if(1==est_sur_mur(joueur,mur,sens)){
-			joueur->y=(joueur->y)-(mur->h)+60;
-		}else if(0==est_sur_mur(joueur,mur,sens)){
-			joueur->y=425;
-		}else{
-			joueur->y=(joueur->y)+50;
-		}*/
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
+
 	}else{		//saute vers la gauche
-		joueur->y=(joueur->y)-50;
+
+		joueur->y=(joueur->y)-100;
 		joueur->x=(joueur->x)-20;
 
 		//change l'apparence du perso
@@ -244,23 +260,20 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 		SDL_Delay(200);
 
 		for(int i=0;i<NB_MURS;i++){
-			if(1==est_sur_mur(joueur,tab->tab_mur[i])){
-					joueur->y=20;
-					//joueur->y=(joueur->y)+(tab->tab_mur[i]->h);
-					//joueur->y=(tab->tab_mur[i]->y)-(tab->tab_mur[i]->h);
+			/*if(1==est_sur_mur(joueur,tab->tab_mur[i],sens)){
+					joueur->y=(tab->tab_mur[i]->y)-(joueur->h);
 			}else{
-				joueur->y=425;
+				
+			}*/	
+			if(1==(est_en_collision_mur(joueur,tab->tab_mur[i],sens))){
+				//est en collision, on ne bouge pas
+				joueur->x=(joueur->x)+20;
+				joueur->y=(joueur->y)+100;
 			}
 		}
-		/*if(1==est_sur_mur(joueur,mur,sens)){
-			joueur->y=(joueur->y)-(mur->h)+60;
-		}else if(0==est_sur_mur(joueur,mur,sens)){
-			joueur->y=425;
-		}else{
-			joueur->y=(joueur->y)+50;
-		}*/
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 	}
+	joueur->y=y_base;
 	limite_horizontale(joueur);
 	return 3;
 }

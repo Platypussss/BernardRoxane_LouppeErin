@@ -11,8 +11,8 @@ void init_map(tab_t *tab){
 		init_mur(tab->tab_mur[i],-50,-50,50,50);
     }
     for(int i=0;i<NB_ENNEMIS;i++){
-        tab->tab_ennemi[i]=malloc(sizeof(ennemi_t));
-        init_ennemi(tab->tab_ennemi[i],-100,-100,100,100);  //à voir avec les designs des ennemis
+        tab->tab_ennemi[i]=malloc(sizeof(joueur_t));
+        init_joueur(tab->tab_ennemi[i],-100,-100,100,100);  //à voir avec les designs des ennemis
 
     }
 }

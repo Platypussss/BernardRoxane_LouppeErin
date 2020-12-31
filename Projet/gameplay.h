@@ -15,15 +15,15 @@
 * \param m le mur
 * \return 1 s'il y a une collision
 */
-int est_en_collision(joueur_t* joueur,mur_t* mur,int sens);
+int est_en_collision_mur(joueur_t* joueur,mur_t* mur,int sens);
 
-/**
+/*/**
 * \brief détecte si le joueur se trouve sur un mur
 * \param j le jouer
 * \param m le mur 
 * \return 1 si le joueur se trouve sur un mur
 */
-int est_sur_mur(joueur_t* j,mur_t* m);
+//int est_sur_mur(joueur_t* j,mur_t* m,int sens);
 
 /**
 * \brief bouge le perso vers le haut
