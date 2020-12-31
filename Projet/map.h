@@ -5,14 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "mur.c"
+#include "sprite.c"
 
 #define NB_MURS 100
 #define NB_ENNEMIS 20
 
 struct tab_s{
-	mur_t *tab_mur[NB_MURS];
-    joueur_t *tab_ennemi[NB_ENNEMIS];
+	sprite_t *tab_mur[NB_MURS];
+    sprite_t *tab_ennemi[NB_ENNEMIS];
 };
 typedef struct tab_s tab_t;
 

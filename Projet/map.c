@@ -6,13 +6,15 @@
 */
 void init_map(tab_t *tab){
 	
+    //initialisation des murs
 	for(int i=0;i<NB_MURS;i++){
-		tab->tab_mur[i]=malloc(sizeof(mur_t));
-		init_mur(tab->tab_mur[i],-50,-50,50,50);
+		tab->tab_mur[i]=malloc(sizeof(sprite_t));
+		init_sprite(tab->tab_mur[i],-50,-50,50,50);
     }
+    //initialisation des ennemis
     for(int i=0;i<NB_ENNEMIS;i++){
-        tab->tab_ennemi[i]=malloc(sizeof(joueur_t));
-        init_joueur(tab->tab_ennemi[i],-100,-100,100,100);  //à voir avec les designs des ennemis
+        tab->tab_ennemi[i]=malloc(sizeof(sprite_t));
+        init_sprite(tab->tab_ennemi[i],-100,-100,100,100);  //à voir avec les designs des ennemis
 
     }
 }
@@ -23,9 +25,11 @@ void init_map(tab_t *tab){
 */
 void clean_map(tab_t *tab){
     for(int i=0;i<NB_MURS;i++){
-        free(tab->tab_mur[i]);
+        //clean les murs
+        clean_sprite(tab->tab_mur[i]);
     }
     for(int i=0;i<NB_ENNEMIS;i++){
-        free(tab->tab_ennemi[i]);
+        //clean les ennemis
+        clean_sprite(tab->tab_ennemi[i]);
     }
 }

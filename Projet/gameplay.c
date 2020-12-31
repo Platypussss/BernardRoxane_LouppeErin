@@ -5,12 +5,12 @@
 #include "gameplay.h"
 
 /**
-* \brief détecte les collisions avec le joueur et les ennemis
-* \param j le joueur
-* \param e le mur
+* \brief détecte les collisions avec le sprite et les ennemis
+* \param j le sprite
+* \param e le sprite
 * \return 1 s'il y a une collision
 */
-/*int est_en_collision_ennemi(joueur_t* j,ennemi_t* e,int sens){
+/*int est_en_collision_ennemi(sprite_t* j,ennemi_t* e,int sens){
 	int x=(j->x)+(j->w)/2;
 	int x1=(e->x)-(e->w)/2;
 	int x2=(j->x)-(j->w)/2;
@@ -27,21 +27,21 @@
 }*/
 
 /**
-* \brief détecte les collisions avec le joueur et les murs
-* \param j le joueur
-* \param m le mur
+* \brief détecte les collisions avec le sprite et les murs
+* \param j le sprite
+* \param m le sprite
 * \return 1 s'il y a une collision
 */
-int est_en_collision_mur(joueur_t* j,mur_t* m,int sens){
-	int x=(j->x)+(j->w)/2;	//x du coté droit du joueur
-	int x1=(m->x)-(m->w)/2;	//x du coté gauche du mur
-	int x2=(j->x)-(j->w)/2;	//x du coté gauche du joueur
-	int x3=(m->x)-(m->w)/2;	//x du coté droit du mur
+int est_en_collision(sprite_t* j,sprite_t* m,int sens){
+	int x=(j->x)+(j->w)/2;	//x du coté droit du sprite
+	int x1=(m->x)-(m->w)/2;	//x du coté gauche du sprite
+	int x2=(j->x)-(j->w)/2;	//x du coté gauche du sprite
+	int x3=(m->x)-(m->w)/2;	//x du coté droit du sprite
 	if((j->y)-(j->h)<=(m->y)-(m->h)){
-		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté droit du mur
+		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté droit du sprite
 			return 1;
 		}
-		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté gauche du mur
+		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté gauche du sprite
 			return 1;
 		}
 		
@@ -64,15 +64,15 @@ int est_en_collision_mur(joueur_t* j,mur_t* m,int sens){
 
 
 /**
-* \brief détecte si le joueur se trouve sur un mur
+* \brief détecte si le sprite se trouve sur un sprite
 * \param j le jouer
-* \param m le mur 
-* \return 1 si le joueur se trouve sur un mur
+* \param m le sprite 
+* \return 1 si le sprite se trouve sur un sprite
 */
-/*int est_sur_mur(joueur_t* joueur,mur_t* mur,int sens){
-	int y_j=joueur->y;
-	int y_m=mur->y;
-	if(1==est_en_collision_mur(joueur,mur,sens) && y_j<=y_m && y_j>y_m-joueur->h){
+/*int est_sur_mur(sprite_t* sprite,mur_t* sprite,int sens){
+	int y_j=sprite->y;
+	int y_m=sprite->y;
+	if(1==est_en_collision(sprite,sprite,sens) && y_j<=y_m && y_j>y_m-sprite->h){
 		return 1;
 	}
 	return 0;
@@ -82,20 +82,20 @@ int est_en_collision_mur(joueur_t* j,mur_t* m,int sens){
 * \brief bouge le perso vers le haut
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param sens du joueur 
+* \param sens du sprite 
 * \return l'orientation du perso
 */
-int bouger_haut(textures_t* textures, SDL_Renderer* renderer,int sens,joueur_t *joueur){
+int bouger_haut(textures_t* textures, SDL_Renderer* renderer,int sens,sprite_t *sprite){
 	int s;
 	if(sens==1 || sens==4){
 		if(sens ==4){
-			joueur->h=(joueur->h)*2;
+			sprite->h=(sprite->h)*2;
 		}
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
 		s=1;
 	}else{
 		if(sens ==5){
-			joueur->h=(joueur->h)*2;
+			sprite->h=(sprite->h)*2;
 		}
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 		s=2;
@@ -107,12 +107,12 @@ int bouger_haut(textures_t* textures, SDL_Renderer* renderer,int sens,joueur_t *
 * \brief bouge le perso vers le bas
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param sens du joueur,permet de changer de sprite
+* \param sens du sprite,permet de changer de sprite
 * \return l'orientation du perso
 */
-int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens,joueur_t *joueur){
+int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens,sprite_t *sprite){
 	int s;
-	joueur->h=(joueur->h)/2;
+	sprite->h=(sprite->h)/2;
 	if(sens==1 || sens==4){
 		textures->perso=charger_image("ressources/accroupis.bmp",renderer);
 		s=4;
@@ -127,14 +127,14 @@ int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens,joueur_t *jo
 * \brief bouge le perso vers la gauche
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param joueur le joueur qui bouge
-* \param tab le tableau de mur en potentiel collision avec le joueur
-* \param sens du joueur,permet de changer de sprite
+* \param sprite le sprite qui bouge
+* \param tab le tableau de sprite en potentiel collision avec le sprite
+* \param sens du sprite,permet de changer de sprite
 * \return l'orientation du perso
 */
-int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,tab_t *tab,int sens){
+int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab,int sens){
 	int s;
-	joueur->x=(joueur->x)-5;
+	sprite->x=(sprite->x)-5;
 	if(sens==4 || sens==5){	//changement de l'orientation du perso
 		textures->perso=charger_image("ressources/accroupis_envers.bmp",renderer);
 		s=5;
@@ -144,16 +144,16 @@ int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 	}
 	//test de collision avec tous les murs
 	for(int i=0;i<NB_MURS;i++){
-		if(1==(est_en_collision_mur(joueur,tab->tab_mur[i],sens))){
+		if(1==(est_en_collision(sprite,tab->tab_mur[i],sens))){
 			//est en collision, on ne bouge pas
-			joueur->x=(joueur->x)+5;
+			sprite->x=(sprite->x)+5;
 		}
-		/*if(0==est_sur_mur(joueur,tab->tab_mur[i],sens)){
-				joueur->y=425;
+		/*if(0==est_sur_mur(sprite,tab->tab_mur[i],sens)){
+				sprite->y=425;
 		}*/
 	}
 	
-	limite_horizontale(joueur);
+	limite_horizontale(sprite);
 	return s;
 }
 
@@ -161,14 +161,14 @@ int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 * \brief bouge le perso vers la droite
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param joueur le joueur qui bouge
-* \param tab le tableau de mur en potentiel collision avec le joueur
-* \param sens du joueur,permet de changer de sprite
+* \param sprite le sprite qui bouge
+* \param tab le tableau de sprite en potentiel collision avec le sprite
+* \param sens du sprite,permet de changer de sprite
 * \return l'orientation du perso
 */
-int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,tab_t *tab,int sens){
+int bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab,int sens){
 	int s;
-	joueur->x=(joueur->x)+5;
+	sprite->x=(sprite->x)+5;
 	
 	if(sens==4 || sens==5){
 		textures->perso=charger_image("ressources/accroupis.bmp",renderer);
@@ -178,15 +178,15 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 		s=1;
 	}	
 	for(int i=0;i<NB_MURS;i++){
-		if(1==(est_en_collision_mur(joueur,tab->tab_mur[i],sens))){
+		if(1==(est_en_collision(sprite,tab->tab_mur[i],sens))){
 			//est en collision, on ne bouge pas
-			joueur->x=(joueur->x)-5;
+			sprite->x=(sprite->x)-5;
 		}
-		/*if(0==est_sur_mur(joueur,tab->tab_mur[i],sens)){
-				joueur->y=425;
+		/*if(0==est_sur_mur(sprite,tab->tab_mur[i],sens)){
+				sprite->y=425;
 		}*/
 	}
-	limite_horizontale(joueur);
+	limite_horizontale(sprite);
 	return s;
 }
 
@@ -195,16 +195,16 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,t
 * \brief fait sauter le perso
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param joueur le joueur qui bouge
-* \param sens du joueur,permet de changer de sprite 
-*\param tab le tableau de mur en potentiel collision avec le joueur
+* \param sprite le sprite qui bouge
+* \param sens du sprite,permet de changer de sprite 
+*\param tab le tableau de sprite en potentiel collision avec le sprite
 * \return l'orientation du perso
 */
-int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,tab_t *tab){
-	int y_base=joueur->y;
+int saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,int sens,tab_t *tab){
+	int y_base=sprite->y;
 	if(sens==1 || sens==4){		//saute vers la droite
-		joueur->y=(joueur->y)-100;
-		joueur->x=(joueur->x)+20;
+		sprite->y=(sprite->y)-100;
+		sprite->x=(sprite->x)+20;
 
 		//change l'apparence du perso
 		textures->murtoutseul=charger_image("ressources/murtoutseul.bmp",renderer);
@@ -213,7 +213,7 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 		//applique la nouvelle texture à l'écran
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer,textures->fond,NULL,NULL);
-		apply_texture(textures->perso,renderer,joueur->x,joueur->y);
+		apply_texture(textures->perso,renderer,sprite->x,sprite->y);
 		for(int i=0;i<NB_MURS;i++){	
 			apply_texture(textures->murtoutseul,renderer,tab->tab_mur[i]->x,tab->tab_mur[i]->y);
 		}
@@ -224,23 +224,23 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 		SDL_Delay(200);
 
 		for(int i=0;i<NB_MURS;i++){
-			/*if(1==est_sur_mur(joueur,tab->tab_mur[i],sens)){
-					joueur->y=(tab->tab_mur[i]->y)-(joueur->h);
+			/*if(1==est_sur_mur(sprite,tab->tab_mur[i],sens)){
+					sprite->y=(tab->tab_mur[i]->y)-(sprite->h);
 			}else{
 				
 			}*/
-			if(1==(est_en_collision_mur(joueur,tab->tab_mur[i],sens))){
+			if(1==(est_en_collision(sprite,tab->tab_mur[i],sens))){
 					//est en collision, on ne bouge pas
-					joueur->x=(joueur->x)-20;
-					joueur->y=(joueur->y)+100;
+					sprite->x=(sprite->x)-20;
+					sprite->y=(sprite->y)+100;
 				}
 		}	
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
 
 	}else{		//saute vers la gauche
 
-		joueur->y=(joueur->y)-100;
-		joueur->x=(joueur->x)-20;
+		sprite->y=(sprite->y)-100;
+		sprite->x=(sprite->x)-20;
 
 		//change l'apparence du perso
 		textures->murtoutseul=charger_image("ressources/murtoutseul.bmp",renderer);
@@ -249,7 +249,7 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 		//applique la nouvelle texture à l'écran
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer,textures->fond,NULL,NULL);
-		apply_texture(textures->perso,renderer,joueur->x,joueur->y);
+		apply_texture(textures->perso,renderer,sprite->x,sprite->y);
 		for(int i=0;i<NB_MURS;i++){	
 			apply_texture(textures->murtoutseul,renderer,tab->tab_mur[i]->x,tab->tab_mur[i]->y);
 		}
@@ -260,21 +260,21 @@ int saut(textures_t* textures,SDL_Renderer* renderer,joueur_t* joueur,int sens,t
 		SDL_Delay(200);
 
 		for(int i=0;i<NB_MURS;i++){
-			/*if(1==est_sur_mur(joueur,tab->tab_mur[i],sens)){
-					joueur->y=(tab->tab_mur[i]->y)-(joueur->h);
+			/*if(1==est_sur_mur(sprite,tab->tab_mur[i],sens)){
+					sprite->y=(tab->tab_mur[i]->y)-(sprite->h);
 			}else{
 				
 			}*/	
-			if(1==(est_en_collision_mur(joueur,tab->tab_mur[i],sens))){
+			if(1==(est_en_collision(sprite,tab->tab_mur[i],sens))){
 				//est en collision, on ne bouge pas
-				joueur->x=(joueur->x)+20;
-				joueur->y=(joueur->y)+100;
+				sprite->x=(sprite->x)+20;
+				sprite->y=(sprite->y)+100;
 			}
 		}
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 	}
-	joueur->y=y_base;
-	limite_horizontale(joueur);
+	sprite->y=y_base;
+	limite_horizontale(sprite);
 	return 3;
 }
 
@@ -296,8 +296,8 @@ void lire_fichier(const char* nomfichier,tab_t *tab){
 				b=b+50;	//change de ligne
 				a=0;	//revient au début de la ligne, les x valent 0
 			}				
-			if(c=='m'){ 	//m correspond à un mur
-				//mets les coordonnées du mur en fonction de la position du 'm' dans le fichier
+			if(c=='m'){ 	//m correspond à un sprite
+				//mets les coordonnées du sprite en fonction de la position du 'm' dans le fichier
 				tab->tab_mur[i]->x=a;
 				tab->tab_mur[i]->y=b;
 				i++;	
@@ -318,7 +318,7 @@ void lire_fichier(const char* nomfichier,tab_t *tab){
 * \brief empêche les personnages de sortir de l'écran horizontalement
 * \param j le personnage qui bouge 
 */
-void limite_horizontale(joueur_t *j){
+void limite_horizontale(sprite_t *j){
 	if(j->x<0){
 		j->x=0;
 	}

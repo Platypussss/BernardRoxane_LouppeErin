@@ -33,8 +33,8 @@ int main(int argc, char *argv[]){
 	textures.ennemi=charger_image("ressources/perso1.bmp",ecran);
 	
 	//initialisation
-	joueur_t joueur;
-	init_joueur(&joueur,0,425,100,100);
+	sprite_t joueur;
+	init_sprite(&joueur,0,425,100,100);
 
 	tab_t tab;
 	init_map(&tab);
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 	//Libérer de la mémoire
-	clean_joueur(&joueur);
+	clean_sprite(&joueur);
 	clean_map(&tab);
 	SDL_DestroyTexture(textures.fond);
 	SDL_DestroyRenderer(ecran);

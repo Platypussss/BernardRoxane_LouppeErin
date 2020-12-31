@@ -1,5 +1,5 @@
-#ifndef H_JOUEUR
-#define H_JOUEUR
+#ifndef H_SPRITE
+#define H_SPRITE
 
 #include <SDL2/SDL.h>
 #include <stdio.h>

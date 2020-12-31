@@ -1,4 +1,4 @@
-#include "joueur.h"
+#include "sprite.h"
 
 /**
 * \brief initialise les données du sprite
