@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "joueur.c"
+#include "map.c"
 
 
 /**
