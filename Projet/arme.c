@@ -7,13 +7,15 @@
 * \param y l'ordonnée
 * \param h la hauteur
 * \param w la largeur
+* \param v la vitesse
 * \param e 0 si l'arme est visible 1 sinon
 */
-void init_arme(arme_t *a,int x,int y,int h,int w,int e){
+void init_arme(arme_t *a,int x,int y,int h,int w,int v,int e){
     a->x=x;
     a->y=y;
     a->h=h;
     a->w=w;
+    a->v=v;
     a->est_visible=e;
 }
 

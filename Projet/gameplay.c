@@ -42,13 +42,9 @@ void init_jeu(sprite_t *joueur,tab_t *tab){
 /**
 * \brief fonction qui gère la perte de vie 
 * \param sp1 le sprite qui pert une vie
-* \param sp2 le sprite qui pert une vie
 */
-void perte_vie(sprite_t *sp1,sprite_t *sp2){
-	if(!(sp1->vie==-10) && !(sp2->vie==-10)){	//les srites ne sont pas des murs
-		sp1->vie=(sp1->vie)-1;
-		sp2->vie=(sp2->vie)-1;
-	}
+void perte_vie(sprite_t *sp1){
+	sp1->vie=(sp1->vie)-1;
 }
 
 /**
@@ -84,10 +80,30 @@ int est_en_collision(sprite_t* j,sprite_t* m){
 			}
 		}
 		if(res==1){	//gère la perte de vie en cas de collision
-			perte_vie(j,m);
+			perte_vie(j);
 		}
 	}
 	return res;
+}
+
+int est_en_collision_arme(sprite_t *sp1, arme_t *a){
+	int res=0;
+	if((sp1->y)-(sp1->h)<=(a->y)-(a->h)){
+		if(sp1->x>=a->x){
+			res=1;
+			perte_vie(sp1);	//le sprite perd une vie si il est touché par un missile
+		}
+	}
+	return res;
+}
+
+void gere_collision_arme(sprite_t *s, arme_t *a, tab_t *tab){
+	for(int i=0;i<NB_MURS;i++){
+		if(1==est_en_collision_arme(tab->tab_ennemi[i],a)){	//missile et un ennemi en collision
+			set_est_visible_arme(a,1);
+			a->x=s->x;	//le missile revient au joueur
+		}
+	}	
 }
 
 /**
@@ -99,10 +115,10 @@ void gere_collision(sprite_t *sp1, tab_t *tab){
 		int x_en_moins=0;
 		int y_en_moins=0;
 		if(sp1->sens==1 || sp1->sens==4){
-			x_en_moins=-5;
+			x_en_moins=-10;
 		}
 		if(sp1->sens==2 || sp1->sens==5){
-			x_en_moins=+5;
+			x_en_moins=+10;
 		}
 		if(sp1->sens==3){
 			x_en_moins=-20;
@@ -236,7 +252,7 @@ void bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,
 void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab){
 	
 	int y_base=sprite->y;
-	if(sprite->sens==1 || sprite->sens==4){		//saute vers la droite
+	if(sprite->sens==1 || sprite->sens==4 || sprite->sens==3){		//saute vers la droite
 		sprite->y=(sprite->y)-100;
 		sprite->x=(sprite->x)+20;
 
@@ -360,8 +376,14 @@ void lancement_missile(sprite_t *s){
 * \param s le sprite du missile à déplacer
 */
 void gere_missile(sprite_t *s){
-	if(s->missile->x<=0 || s->missile->x>=SCREEN_WIDTH){
+	if((s->missile->x<0 || s->missile->x>SCREEN_WIDTH)){
 		//le missile à dépasser les bords, il devient invisible
 		set_est_visible_arme(s->missile,1);
+		s->missile->x=s->x;	//revient au niveau du joueur
+		
+	}else{
+		if(get_est_visible_arme(s->missile)==0){
+			s->missile->x=(s->missile->x)+(s->missile->v);
+		}
 	}
 }

@@ -28,9 +28,8 @@ void init_jeu(sprite_t *joueur,tab_t *tab);
 /**
 * \brief fonction qui gère la perte de vie 
 * \param sp1 le sprite qui pert une vie
-* \param sp2 le sprite qui pert une vie
 */
-void perte_vie(sprite_t *sp1,sprite_t *sp2);
+void perte_vie(sprite_t *sp1);
 
 /**
 * \brief détecte les collisions entre les sprites
@@ -40,12 +39,16 @@ void perte_vie(sprite_t *sp1,sprite_t *sp2);
 */
 int est_en_collision(sprite_t* sprite,sprite_t* sprite2);
 
+int est_en_collision_arme(sprite_t *sp1, arme_t *a);
+
 /**
 * \brief fonction qui gère les collisions
 * \param sp1 le sprite en potentiel collision
 * \param tab le tableau de sprite en potentiel collision
 */
 void gere_collision(sprite_t *sp1, tab_t *tab);
+
+void gere_collision_arme(sprite_t *s, arme_t *a, tab_t *tab);
 
 /*/**
 * \brief détecte si le sprite se trouve sur un sprite

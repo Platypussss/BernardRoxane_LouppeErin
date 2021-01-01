@@ -44,44 +44,43 @@ int main(int argc, char *argv[]){
 		SDL_RenderPresent(ecran);
 		
 		//boucle qui gère les évenements
-		while( SDL_PollEvent(&evenements ) )
-		
-		switch(evenements.type){
-			case SDL_QUIT:
-				terminer = true; 
-				break;
-			//évenements clavier
-			case SDL_KEYDOWN:
-			switch(evenements.key.keysym.sym){
-				case SDLK_q:
-					terminer = true;  
+		while( SDL_PollEvent(&evenements))
+			switch(evenements.type){
+				case SDL_QUIT:
+					terminer = true; 
 					break;
-				case SDLK_UP:
-					bouger_haut(&textures,ecran,&joueur);
-					break;
-				case SDLK_DOWN:
-					bouger_bas(&textures,ecran,&joueur);
-					break;
-				case SDLK_LEFT:
-					bouger_gauche(&textures,ecran,&joueur,&tab);
-					break;
-				case SDLK_RIGHT:
-					bouger_droite(&textures,ecran,&joueur,&tab);
-					break;
-				case SDLK_SPACE:
-					saut(&textures,ecran,&joueur,&tab);
-					break;
-			}
-			//évenements souris
-			case SDL_MOUSEBUTTONUP:
-			switch(evenements.button.button){
-				case SDL_BUTTON_LEFT:
-					lancement_missile(&joueur);
-					break;
+				//évenements clavier
+				case SDL_KEYDOWN:
+				switch(evenements.key.keysym.sym){
+					case SDLK_q:
+						terminer = true;  
+						break;
+					case SDLK_UP:
+						bouger_haut(&textures,ecran,&joueur);
+						break;
+					case SDLK_DOWN:
+						bouger_bas(&textures,ecran,&joueur);
+						break;
+					case SDLK_LEFT:
+						bouger_gauche(&textures,ecran,&joueur,&tab);
+						break;
+					case SDLK_RIGHT:
+						bouger_droite(&textures,ecran,&joueur,&tab);
+						break;
+					case SDLK_SPACE:
+						saut(&textures,ecran,&joueur,&tab);
+						break;
 				}
-
-			terminer=jeu_fini(&joueur,&tab);
-		}
+				//évenements souris
+				case SDL_MOUSEBUTTONDOWN:
+				switch(evenements.button.button){
+					case SDL_BUTTON_LEFT:
+						lancement_missile(&joueur);
+						break;
+					}
+				terminer=jeu_fini(&joueur,&tab);
+			}
+		gere_missile(&joueur);
 	}
 	//Libérer de la mémoire
 	clean_sprite(&joueur);

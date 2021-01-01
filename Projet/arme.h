@@ -11,6 +11,7 @@ struct arme_s{
     int y;
     int h;
     int w;
+    int v;  //vitesse
     int est_visible;    //o si vrai 1 sinon
 };
 typedef struct arme_s arme_t;
@@ -22,9 +23,10 @@ typedef struct arme_s arme_t;
 * \param y l'ordonnée
 * \param h la hauteur
 * \param w la largeur
+* \param v la vitesse
 * \param e 0 si l'arme est visible 1 sinon
 */
-void init_arme(arme_t *a,int x,int y,int h,int w,int e);
+void init_arme(arme_t *a,int x,int y,int h,int w,int v,int e);
 
 /**
 * \brief change la valeur du champ est_visible d'une arme

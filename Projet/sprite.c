@@ -20,7 +20,7 @@ void init_sprite(sprite_t* j,int a,int b,int c,int d,int s,int v,int e){
 	j->vie=v;
 	j->missile=malloc(sizeof(arme_t));
 	j->est_visible=e;
-	init_arme(j->missile,a,b,10,10,1);
+	init_arme(j->missile,j->x,j->y+(j->h)/2,10,10,5,1);
 }
 
 /**
