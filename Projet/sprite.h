@@ -15,6 +15,7 @@ struct sprite_s{
 	int y;
 	int h;
 	int w;
+	int vie;
 	arme_t *missile;
 };
 typedef struct sprite_s sprite_t;
@@ -26,8 +27,9 @@ typedef struct sprite_s sprite_t;
 * \param b l'ordonnée du sprite
 * \param c la hauteur du sprite
 * \param d la largeur du sprite
+* \param v la vie du sprite
 */
-void init_sprite(sprite_t* j,int a,int b,int c,int d);
+void init_sprite(sprite_t* j,int a,int b,int c,int d,int v);
 
 /**
 * \brief libère l'espace mémoire occupé par le sprite

@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
 	
 	//initialisation
 	sprite_t joueur;
-	init_sprite(&joueur,0,425,100,100);
+	init_sprite(&joueur,0,425,100,100,5);
 
 	tab_t tab;
 	init_map(&tab);
@@ -100,6 +100,7 @@ int main(int argc, char *argv[]){
 					//printf("est visible:%d\n",get_est_visible(joueur.missile));
 					break;
 				}*/
+			terminer=jeu_fini(&joueur,&tab);
 		}
 	}
 	//Libérer de la mémoire

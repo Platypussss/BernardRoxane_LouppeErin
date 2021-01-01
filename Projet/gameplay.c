@@ -5,26 +5,16 @@
 #include "gameplay.h"
 
 /**
-* \brief détecte les collisions avec le sprite et les ennemis
-* \param j le sprite
-* \param e le sprite
-* \return 1 s'il y a une collision
+* \brief fonction qui gère la perte de vie 
+* \param sp1 le sprite qui pert une vie
+* \param sp2 le sprite qui pert une vie
 */
-/*int est_en_collision_ennemi(sprite_t* j,ennemi_t* e,int sens){
-	int x=(j->x)+(j->w)/2;
-	int x1=(e->x)-(e->w)/2;
-	int x2=(j->x)-(j->w)/2;
-	int x3=(e->x)-(e->w)/2;
-	if((j->y)-(j->h)<=(e->y)-(e->h)){
-		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté gauche de l'ennemi
-			return 1;
-		}
-		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté droit de l'ennemi
-			return 1;
-		}
+void perte_vie(sprite_t *sp1,sprite_t *sp2){
+	if(!(sp1->vie==-10) && !(sp2->vie==-10)){	//les srites ne sont pas des murs
+		sp1->vie=(sp1->vie)-1;
+		sp2->vie=(sp2->vie)-1;
 	}
-	return 0;
-}*/
+}
 
 /**
 * \brief détecte les collisions avec le sprite et les murs
@@ -33,35 +23,72 @@
 * \return 1 s'il y a une collision
 */
 int est_en_collision(sprite_t* j,sprite_t* m,int sens){
-	int x=(j->x)+(j->w)/2;	//x du coté droit du sprite
-	int x1=(m->x)-(m->w)/2;	//x du coté gauche du sprite
-	int x2=(j->x)-(j->w)/2;	//x du coté gauche du sprite
-	int x3=(m->x)-(m->w)/2;	//x du coté droit du sprite
+	int res=0;
+	int x=(j->x)+(j->w)/2;	//x du coté droit du sprite j
+	int x1=(m->x)-(m->w)/2;	//x du coté gauche du sprite m
+	int x2=(j->x)-(j->w)/2;	//x du coté gauche du sprite j
+	int x3=(m->x)-(m->w)/2;	//x du coté droit du sprite m
 	if((j->y)-(j->h)<=(m->y)-(m->h)){
 		if(x2==x3 && (sens==2 || sens==5)){	//en collision avec le côté droit du sprite
-			return 1;
+			res=1;
 		}
 		if(x==x1 && (sens==1 || sens==4)){	//en collision avec le côté gauche du sprite
-			return 1;
+			res=1;
 		}
 		
 		//pour le saut:
 		//le perso se trouve entre les deux extremités
 		if(x>x1 && x<x3+(m->w)/2){	
-			return 1;
+			res=1;
 		}
 		if(x2<x3 && x2>x1-(m->w)/2){
-			return 1;
+			res=1;
 		}
 	}
-	/*int d=((m->x)-(j->y))*((m->x)-(j->x))+((m->y)-(j->y))*((m->y)-(j->y));	//distannce entre les centres des 2 objets
-	int r=((j->w)/2 - (m->h)/2)*((j->w)/2 - (m->h)/2);	//distance max de collision
-	if(d<r){	//en collision
-		return 1;
-	}*/
-	return 0;
+	if(res==1){	//gère la perte de vie en cas de collision
+		perte_vie(j,m);
+	}
+	return res;
 }
 
+/**
+* \brief fonction qui gère les collisions
+* \param sp1 le sprite en potentiel collision
+* \param tab le tableau de sprite en potentiel collision
+* \param sens_sp1 l'orientataion du sprite sp1
+*/
+void gere_collision(sprite_t *sp1, tab_t *tab, int sens_sp1){
+		int x_en_moins=0;
+		int y_en_moins=0;
+		if(sens_sp1==1 || sens_sp1==4){
+			x_en_moins=-5;
+		}
+		if(sens_sp1==2 || sens_sp1==5){
+			x_en_moins=+5;
+		}
+		if(sens_sp1==3){
+			x_en_moins=-20;
+			y_en_moins=100;
+		}
+		if(sens_sp1==6){
+			x_en_moins=20;
+			y_en_moins=100;
+		}
+		for(int i=0;i<NB_MURS;i++){
+		if(1==(est_en_collision(sp1,tab->tab_mur[i],sens_sp1))){
+			//est en collision, on ne bouge pas
+			sp1->x=(sp1->x)+x_en_moins;
+			sp1->y=(sp1->y)+y_en_moins;
+		}
+		}
+		for(int i=0;i<NB_ENNEMIS;i++){
+			if(1==(est_en_collision(sp1,tab->tab_ennemi[i],sens_sp1))){
+				//est en collision, on recule un petit peu
+				sp1->x=(sp1->x)+x_en_moins+x_en_moins;
+				sp1->y=(sp1->y)+y_en_moins;
+			}
+		}
+}
 
 /**
 * \brief détecte si le sprite se trouve sur un sprite
@@ -142,17 +169,7 @@ int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,t
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 		s=2;
 	}
-	//test de collision avec tous les murs
-	for(int i=0;i<NB_MURS;i++){
-		if(1==(est_en_collision(sprite,tab->tab_mur[i],sens))){
-			//est en collision, on ne bouge pas
-			sprite->x=(sprite->x)+5;
-		}
-		/*if(0==est_sur_mur(sprite,tab->tab_mur[i],sens)){
-				sprite->y=425;
-		}*/
-	}
-	
+	gere_collision(sprite,tab,sens);
 	limite_horizontale(sprite);
 	return s;
 }
@@ -176,16 +193,8 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,t
 	}else{
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
 		s=1;
-	}	
-	for(int i=0;i<NB_MURS;i++){
-		if(1==(est_en_collision(sprite,tab->tab_mur[i],sens))){
-			//est en collision, on ne bouge pas
-			sprite->x=(sprite->x)-5;
-		}
-		/*if(0==est_sur_mur(sprite,tab->tab_mur[i],sens)){
-				sprite->y=425;
-		}*/
 	}
+	gere_collision(sprite,tab,sens);
 	limite_horizontale(sprite);
 	return s;
 }
@@ -201,6 +210,7 @@ int bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,t
 * \return l'orientation du perso
 */
 int saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,int sens,tab_t *tab){
+	int s;
 	int y_base=sprite->y;
 	if(sens==1 || sens==4){		//saute vers la droite
 		sprite->y=(sprite->y)-100;
@@ -223,18 +233,8 @@ int saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,int sens,t
 		SDL_RenderPresent(renderer);
 		SDL_Delay(200);
 
-		for(int i=0;i<NB_MURS;i++){
-			/*if(1==est_sur_mur(sprite,tab->tab_mur[i],sens)){
-					sprite->y=(tab->tab_mur[i]->y)-(sprite->h);
-			}else{
-				
-			}*/
-			if(1==(est_en_collision(sprite,tab->tab_mur[i],sens))){
-					//est en collision, on ne bouge pas
-					sprite->x=(sprite->x)-20;
-					sprite->y=(sprite->y)+100;
-				}
-		}	
+		s=3;
+		gere_collision(sprite,tab,s);
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
 
 	}else{		//saute vers la gauche
@@ -259,23 +259,13 @@ int saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,int sens,t
 		SDL_RenderPresent(renderer);
 		SDL_Delay(200);
 
-		for(int i=0;i<NB_MURS;i++){
-			/*if(1==est_sur_mur(sprite,tab->tab_mur[i],sens)){
-					sprite->y=(tab->tab_mur[i]->y)-(sprite->h);
-			}else{
-				
-			}*/	
-			if(1==(est_en_collision(sprite,tab->tab_mur[i],sens))){
-				//est en collision, on ne bouge pas
-				sprite->x=(sprite->x)+20;
-				sprite->y=(sprite->y)+100;
-			}
-		}
+		s=6;
+		gere_collision(sprite,tab,s);
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 	}
 	sprite->y=y_base;
 	limite_horizontale(sprite);
-	return 3;
+	return s;
 }
 
 /**
@@ -327,3 +317,21 @@ void limite_horizontale(sprite_t *j){
 	}
 }
 
+
+/**
+* \brief fonction que dit si le jeu est fini
+* \param j le joueur, vérifie qu'il a encore de la vie
+* \param tab les ennemis, vérifie leur vie
+* \return true si le joueur n'a plus de vie ou si tout les ennemis n'ont plus de vie, flase sinon
+*/
+bool jeu_fini(sprite_t *j,tab_t *tab){
+	if(j->vie==-1){	//le joueur n'a plus de vie
+		return true;
+	}
+	for(int i=0;i<NB_ENNEMIS;i++){
+		if(tab->tab_ennemi[i]->vie!=-1){	//au moins un ennemis a encore de la vie
+			return false;
+		}
+	}
+	return true;
+}

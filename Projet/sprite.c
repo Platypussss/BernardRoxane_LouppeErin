@@ -7,12 +7,14 @@
 * \param b l'ordonnée du sprite
 * \param c la hauteur du sprite
 * \param d la largeur du sprite
+* \param v la vie du sprite
 */
-void init_sprite(sprite_t* j,int a,int b,int c,int d){
+void init_sprite(sprite_t* j,int a,int b,int c,int d,int v){
 	j->x=a;
 	j->y=b;
 	j->h=c;
 	j->w=d;
+	j->vie=v;
 	j->missile=malloc(sizeof(arme_t));
 	init_arme(j->missile,10,10,10,10,0);
 }

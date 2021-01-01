@@ -7,6 +7,12 @@
 #include <stdbool.h>
 #include "map.c"
 
+/**
+* \brief fonction qui gère la perte de vie 
+* \param sp1 le sprite qui pert une vie
+* \param sp2 le sprite qui pert une vie
+*/
+void perte_vie(sprite_t *sp1,sprite_t *sp2);
 
 /**
 * \brief détecte les collisions entre les sprites
@@ -15,6 +21,14 @@
 * \return 1 s'il y a une collision
 */
 int est_en_collision(sprite_t* sprite,sprite_t* sprite2,int sens);
+
+/**
+* \brief fonction qui gère les collisions
+* \param sp1 le sprite en potentiel collision
+* \param tab le tableau de sprite en potentiel collision
+* \param sens_sp1 l'orientataion du sprite sp1
+*/
+void gere_collision(sprite_t *sp1, tab_t *tab, int sens_sp1);
 
 /*/**
 * \brief détecte si le sprite se trouve sur un sprite
@@ -88,5 +102,13 @@ void lire_fichier(const char* nomfichier,tab_t *tab);
 * \param j le personnage qui bouge 
 */
 void limite_horizontale(sprite_t *j);
+
+/**
+* \brief fonction que dit si le jeu est fini
+* \param j le joueur, vérifie qu'il a encore de la vie
+* \param tab les ennemis, vérifie leur vie
+* \return true si le joueur n'a plus de vie ou si tout les ennemis n'ont plus de vie, flase sinon
+*/
+bool jeu_fini(sprite_t *j,tab_t *tab);
 
 #endif
