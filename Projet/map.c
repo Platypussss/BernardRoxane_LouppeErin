@@ -9,12 +9,12 @@ void init_map(tab_t *tab){
     //initialisation des murs
 	for(int i=0;i<NB_MURS;i++){
 		tab->tab_mur[i]=malloc(sizeof(sprite_t));
-		init_sprite(tab->tab_mur[i],-50,-50,50,50,-10);
+		init_sprite(tab->tab_mur[i],-50,-50,50,50,1,-10,0);
     }
     //initialisation des ennemis
     for(int i=0;i<NB_ENNEMIS;i++){
         tab->tab_ennemi[i]=malloc(sizeof(sprite_t));
-        init_sprite(tab->tab_ennemi[i],-100,-100,100,100,10);  //à voir avec les designs des ennemis
+        init_sprite(tab->tab_ennemi[i],-100,-100,100,100,1,10,1);  //à voir avec les designs des ennemis
 
     }
 }

@@ -6,6 +6,24 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "map.c"
+#include "affichage.c"
+
+
+/**
+* \brief fonction qui applique toutes les textures
+* \param textures la struct contenant toutes les textures
+* \param renderer l'écran sur lequel on applique les textures
+* \param joueur le joueur
+* \param tab la struct avec les ennemis et les murs
+*/
+void apply_monde(textures_t *textures,SDL_Renderer *renderer,sprite_t *joueur, tab_t *tab);
+
+/**
+* \brief fonction qui initialise les données du jeu
+* \param joueur le joueur
+* \param tab la structure contenant les ennemis et les murs
+*/
+void init_jeu(sprite_t *joueur,tab_t *tab);
 
 /**
 * \brief fonction qui gère la perte de vie 
@@ -20,15 +38,14 @@ void perte_vie(sprite_t *sp1,sprite_t *sp2);
 * \param m le sprite
 * \return 1 s'il y a une collision
 */
-int est_en_collision(sprite_t* sprite,sprite_t* sprite2,int sens);
+int est_en_collision(sprite_t* sprite,sprite_t* sprite2);
 
 /**
 * \brief fonction qui gère les collisions
 * \param sp1 le sprite en potentiel collision
 * \param tab le tableau de sprite en potentiel collision
-* \param sens_sp1 l'orientataion du sprite sp1
 */
-void gere_collision(sprite_t *sp1, tab_t *tab, int sens_sp1);
+void gere_collision(sprite_t *sp1, tab_t *tab);
 
 /*/**
 * \brief détecte si le sprite se trouve sur un sprite
@@ -42,19 +59,15 @@ void gere_collision(sprite_t *sp1, tab_t *tab, int sens_sp1);
 * \brief bouge le perso vers le haut
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param sens du sprite,permet de changer de sprite
-* \return l'orientation du perso
 */
-int bouger_haut(textures_t* textures,SDL_Renderer* renderer,int sens,sprite_t *sprite);
+void bouger_haut(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite);
 
 /**
 * \brief bouge le perso vers le bas
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
-* \param sens du sprite,permet de changer de sprite
-* \return l'orientation du perso
 */
-int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens,sprite_t *sprite);
+void bouger_bas(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite);
 
 /**
 * \brief bouge le perso vers la gauche
@@ -62,10 +75,8 @@ int bouger_bas(textures_t* textures,SDL_Renderer* renderer,int sens,sprite_t *sp
 * \param renderer la surface correspondant à la surface du jeu
 * \param sprite le sprite qui bouge
 * \param tab le tableau en potentiel collision avec le sprite
-* \param sens du sprite,permet de changer de sprite
-* \return l'orientation du perso
 */
-int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab,int sens);
+void bouger_gauche(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab);
 
 /**
 * \brief bouge le perso vers la droite
@@ -73,21 +84,17 @@ int bouger_gauche(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,t
 * \param renderer la surface correspondant à la surface du jeu
 * \param sprite le sprite qui bouge
 * \param tab le tableau en potentiel collision avec le sprite
-* \param sens du sprite,permet de changer de sprite
-* \return l'orientation du perso
 */
-int bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab,int sens);
+void bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab);
 
 /**
 * \brief fait sauter le perso
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
 * \param sprite le sprite qui bouge
-* \param sens du sprite 
 * \param tab le tableau en potentiel collision avec le sprite
-* \return l'orientation du perso
 */
-int saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,int sens,tab_t *tab);
+void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab);
 
 /**
 * \brief fonction qui modifie les coordonnées de tous les sprites et ennemis en fonction des caractères du fichier
@@ -110,5 +117,17 @@ void limite_horizontale(sprite_t *j);
 * \return true si le joueur n'a plus de vie ou si tout les ennemis n'ont plus de vie, flase sinon
 */
 bool jeu_fini(sprite_t *j,tab_t *tab);
+
+/**
+* \brief la fonction qui gere le lancement du missile
+* \param s le sprite où on veut gérer le missile 
+*/
+void lancement_missile(sprite_t *s);
+
+/**
+* \brief le fonction qui gère le déplacement du missile
+* \param s le sprite du missile à déplacer
+*/
+void gere_missile(sprite_t *s);
 
 #endif

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "affichage.c"
 #include "gameplay.c"
 
 int main(int argc, char *argv[]){
@@ -27,21 +26,13 @@ int main(int argc, char *argv[]){
 	
 	//Charger l'image
 	textures_t textures;
-	textures.fond=charger_image("ressources/fond1.bmp",ecran);
-	textures.perso=charger_image("ressources/marche1.bmp",ecran);
-	textures.murtoutseul=charger_image("ressources/murtoutseul.bmp",ecran);
-	textures.ennemi=charger_image("ressources/perso1.bmp",ecran);
+	init_textures(ecran,&textures);
 	
 	//initialisation
 	sprite_t joueur;
-	init_sprite(&joueur,0,425,100,100,5);
-
 	tab_t tab;
-	init_map(&tab);
-	lire_fichier("file.txt",&tab);	//moifie les coordonnées des murs en fonction du fichier txt
+	init_jeu(&joueur,&tab);
 	
-	int tmp=1;
-	int sens=tmp;	//détermine quel sprite appliquer selon l'orientation du personnage ex:1->droite,2->gauche,3->saut...
 	
 	// Boucle principale
 	while(!terminer){
@@ -49,15 +40,9 @@ int main(int argc, char *argv[]){
 		//appliquer les textures sur l'écran
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,textures.fond,NULL,NULL);
-		apply_texture(textures.perso,ecran,joueur.x,joueur.y);
-		for(int i=0;i<NB_MURS;i++){	
-			apply_texture(textures.murtoutseul,ecran,tab.tab_mur[i]->x,tab.tab_mur[i]->y);
-		}
-		for(int i=0;i<NB_ENNEMIS;i++){	
-			apply_texture(textures.ennemi,ecran,tab.tab_ennemi[i]->x,tab.tab_ennemi[i]->y);
-		}
+		apply_monde(&textures,ecran,&joueur,&tab);
 		SDL_RenderPresent(ecran);
-		sens=tmp;
+		
 		//boucle qui gère les évenements
 		while( SDL_PollEvent(&evenements ) )
 		
@@ -72,34 +57,29 @@ int main(int argc, char *argv[]){
 					terminer = true;  
 					break;
 				case SDLK_UP:
-					sens=bouger_haut(&textures,ecran,sens,&joueur);
-					tmp=sens;
+					bouger_haut(&textures,ecran,&joueur);
 					break;
 				case SDLK_DOWN:
-					sens=bouger_bas(&textures,ecran,sens,&joueur);
-					tmp=sens;
+					bouger_bas(&textures,ecran,&joueur);
 					break;
 				case SDLK_LEFT:
-					sens=bouger_gauche(&textures,ecran,&joueur,&tab,sens);
-					tmp=sens;
+					bouger_gauche(&textures,ecran,&joueur,&tab);
 					break;
 				case SDLK_RIGHT:
-					sens=bouger_droite(&textures,ecran,&joueur,&tab,sens);
-					tmp=sens;
+					bouger_droite(&textures,ecran,&joueur,&tab);
 					break;
 				case SDLK_SPACE:
-					tmp=sens;
-					sens=saut(&textures,ecran,&joueur,sens,&tab);
+					saut(&textures,ecran,&joueur,&tab);
 					break;
 			}
 			//évenements souris
-			/*case SDL_MOUSEBUTTONUP:
+			case SDL_MOUSEBUTTONUP:
 			switch(evenements.button.button){
 				case SDL_BUTTON_LEFT:
-					set_est_visible(joueur.missile,1);
-					//printf("est visible:%d\n",get_est_visible(joueur.missile));
+					lancement_missile(&joueur);
 					break;
-				}*/
+				}
+
 			terminer=jeu_fini(&joueur,&tab);
 		}
 	}

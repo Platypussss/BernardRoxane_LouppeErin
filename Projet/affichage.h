@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-//#include "gameplay.h"
 
 #define SCREEN_HEIGHT 600
 #define SCREEN_WIDTH 1000
@@ -15,6 +14,7 @@ struct textures_s{
     SDL_Texture* perso;
     SDL_Texture* murtoutseul;
     SDL_Texture* ennemi;
+    SDL_Texture* arme;
 };
 typedef struct textures_s textures_t;
 /**
@@ -34,8 +34,8 @@ SDL_Texture* charger_image(const char* nomfichier, SDL_Renderer* renderer);
  * \brief La fonction initialise les texures
  * \param renderer la surface correspondant à l'écran de jeu
  * \param texture les textures du jeu
-
-void init_textures(SDL_Renderer* renderer,textures_t* textures);*/
+*/
+void init_textures(SDL_Renderer* renderer,textures_t* textures);
 
 /**
 * \brief applique une texture sur un renderer
