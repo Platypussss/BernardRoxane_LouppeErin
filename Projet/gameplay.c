@@ -72,15 +72,12 @@ int est_en_collision(sprite_t* j,sprite_t* m){
 			
 			//pour le saut:
 			//le perso se trouve entre les deux extremités
-			if(x>x1 && x<x3+(m->w)/2){	
+		/*	if(x>x1 && x<x3+(m->w)/2){	
 				res=1;
 			}
 			if(x2<x3 && x2>x1-(m->w)/2){
 				res=1;
-			}
-		}
-		if(res==1){	//gère la perte de vie en cas de collision
-			perte_vie(j);
+			}*/
 		}
 	}
 	return res;
@@ -88,10 +85,29 @@ int est_en_collision(sprite_t* j,sprite_t* m){
 
 int est_en_collision_arme(sprite_t *sp1, arme_t *a){
 	int res=0;
-	if((sp1->y)-(sp1->h)<=(a->y)-(a->h)){
-		if(sp1->x>=a->x){
-			res=1;
-			perte_vie(sp1);	//le sprite perd une vie si il est touché par un missile
+	if(get_est_visible(sp1)==1 || get_est_visible_arme(a)==1){	//au moins un des deux sprites est invisible
+		res=0;
+	}else{	//aucun des sprites est invisibles
+		int x=(sp1->x)+(sp1->w)/2;	//x du coté droit du sprite sp1
+		int x1=(a->x)-(a->w)/2;	//x du coté gauche du sprite a
+		int x2=(sp1->x)-(sp1->w)/2;	//x du coté gauche du sprite sp1
+		int x3=(a->x)-(a->w)/2;	//x du coté droit du sprite a
+		if((sp1->y)-(sp1->h)<=(a->y)-(a->h)){
+			if(x2<=x3 && (sp1->sens==2 || sp1->sens==5)){	//en collision avec le côté droit du sprite
+				res=1;
+			}
+			if(x>=x1 && (sp1->sens==1 || sp1->sens==4)){	//en collision avec le côté gauche du sprite
+				res=1;
+			}
+			
+			//pour le saut:
+			//le perso se trouve entre les deux extremités
+			/*if(x>x1 && x<x3+(a->w)/2){	
+				res=1;
+			}
+			if(x2<x3 && x2>x1-(a->w)/2){
+				res=1;
+			}*/
 		}
 	}
 	return res;
@@ -137,27 +153,40 @@ void gere_collision(sprite_t *sp1, tab_t *tab){
 		}
 		for(int i=0;i<NB_ENNEMIS;i++){
 			if(1==(est_en_collision(sp1,tab->tab_ennemi[i]))){
-				//est en collision, on recule un petit peu
+				//est en collision, on recule un petit peu et on perd une vie
 				sp1->x=(sp1->x)+x_en_moins+x_en_moins;
 				sp1->y=(sp1->y)+y_en_moins;
+				perte_vie(sp1);
 			}
 		}
 }
 
 /**
 * \brief détecte si le sprite se trouve sur un sprite
-* \param j le jouer
-* \param m le sprite 
+* \param sp1 un sprite
+* \param sp2 un sprite 
 * \return 1 si le sprite se trouve sur un sprite
 */
-/*int est_sur_mur(sprite_t* sprite,mur_t* sprite,int sens){
-	int y_j=sprite->y;
-	int y_m=sprite->y;
-	if(1==est_en_collision(sprite,sprite,sens) && y_j<=y_m && y_j>y_m-sprite->h){
-		return 1;
-	}
-	return 0;
-}*/
+int est_sur_sprite(sprite_t* sp1,sprite_t* sp2,int sens){
+	int res=0;
+	int y_j=sp1->y;
+	int y_m=sp2->y;
+	int x=(sp1->x)+(sp1->w)/2;
+	int x1=(sp2->x)-(sp2->w)/2;
+	int x2=(sp1->x)-(sp1->w)/2;
+	int x3=(sp2->x)-(sp2->w)/2;	
+	//if(y_j>y_m){
+		//le perso se trouve entre les deux extremités
+		if(x>x1 && x<x3){	
+			res=1;
+		}
+		if(x2<x3 && x2>x1){
+			res=1;
+		}
+			
+//	}
+	return res;
+}
 
 /**
 * \brief bouge le perso vers le haut
@@ -269,8 +298,14 @@ void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *ta
 
 		sprite->sens=3;
 		gere_collision(sprite,tab);
-		textures->perso=charger_image("ressources/marche1.bmp",renderer);
-
+		for(int i=0;i<NB_MURS;i++){
+			if(1==est_sur_sprite(sprite,tab->tab_mur[i],sprite->sens)){
+				sprite->y=(tab->tab_mur[i]->y)+(sprite->h);
+			}else{
+				sprite->y=y_base;
+			}
+			printf("%d\n",est_sur_sprite(sprite,tab->tab_mur[i],sprite->sens));
+		}
 	}else{		//saute vers la gauche
 
 		sprite->y=(sprite->y)-100;
@@ -289,9 +324,16 @@ void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *ta
 
 		sprite->sens=6;
 		gere_collision(sprite,tab);
+		for(int i=0;i<NB_MURS;i++){
+			if(1==est_sur_sprite(sprite,tab->tab_mur[i],sprite->sens)){
+				sprite->y=(tab->tab_mur[i]->y)-(tab->tab_mur[i]->h)/2;
+			}else{
+				sprite->y=y_base;
+			}
+		}
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 	}
-	sprite->y=y_base;
+	
 	limite_horizontale(sprite);
 }
 
@@ -382,8 +424,15 @@ void gere_missile(sprite_t *s){
 		s->missile->x=s->x;	//revient au niveau du joueur
 		
 	}else{
-		if(get_est_visible_arme(s->missile)==0){
-			s->missile->x=(s->missile->x)+(s->missile->v);
+		if(get_est_visible_arme(s->missile)==0 && get_est_visible(s)==0){
+			if(s->sens==1 || s->sens==4 || s->sens==3){
+				//le missile part vers la droite
+				s->missile->x=(s->missile->x)+(s->missile->v);
+			}else{
+				//le missile part vers la gauche
+				s->missile->x=(s->missile->x)-(s->missile->v);
+			}
+			
 		}
 	}
 }

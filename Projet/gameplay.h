@@ -50,13 +50,13 @@ void gere_collision(sprite_t *sp1, tab_t *tab);
 
 void gere_collision_arme(sprite_t *s, arme_t *a, tab_t *tab);
 
-/*/**
+/**
 * \brief détecte si le sprite se trouve sur un sprite
 * \param j le jouer
 * \param m le sprite 
 * \return 1 si le sprite se trouve sur un sprite
 */
-//int est_sur_sprite(sprite_t* j,sprite_t* m,int sens);
+int est_sur_sprite(sprite_t* j,sprite_t* m,int sens);
 
 /**
 * \brief bouge le perso vers le haut

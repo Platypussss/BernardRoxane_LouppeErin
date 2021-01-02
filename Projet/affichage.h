@@ -44,4 +44,5 @@ void init_textures(SDL_Renderer* renderer,textures_t* textures);
 */
 void apply_texture(SDL_Texture *texture,SDL_Renderer *renderer,int x, int y);
 
+
 #endif
