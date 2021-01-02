@@ -28,7 +28,7 @@ void init_textures(SDL_Renderer* renderer,textures_t* textures){
 	textures->fond=charger_image("ressources/fond1.bmp",renderer);
 	textures->perso=charger_image("ressources/marche1.bmp",renderer);
 	textures->murtoutseul=charger_image("ressources/murtoutseul.bmp",renderer);
-	textures->ennemi=charger_image("ressources/perso1.bmp",renderer);
+	textures->ennemi=charger_image("ressources/ennemi.bmp",renderer);
 	textures->arme=charger_image("ressources/arme.bmp",renderer);
 }
 

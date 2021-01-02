@@ -8,6 +8,12 @@
 #include "map.c"
 #include "affichage.c"
 
+#define DROIT_HAUT 1
+#define GAUCHE_HAUT 2
+#define SAUT_DROIT 3
+#define ACCROUPIS_DROIT 4
+#define ACCROUPIS_GAUCHE 5
+#define SAUT_GAUCHE 6
 
 /**
 * \brief fonction qui applique toutes les textures

@@ -34,7 +34,7 @@ void apply_monde(textures_t *textures,SDL_Renderer *renderer, sprite_t *joueur, 
 * \param tab la structure contenant les ennemis et les murs
 */
 void init_jeu(sprite_t *joueur,tab_t *tab){
-	init_sprite(joueur,0,425,100,100,1,5,0);
+	init_sprite(joueur,0,425,100,100,DROIT_HAUT,5,0);
 	init_map(tab);
 	lire_fichier("file.txt",tab);	//moifie les coordonnées des murs en fonction du fichier txt*/
 }
@@ -63,21 +63,22 @@ int est_en_collision(sprite_t* j,sprite_t* m){
 		int x2=(j->x)-(j->w)/2;	//x du coté gauche du sprite j
 		int x3=(m->x)-(m->w)/2;	//x du coté droit du sprite m
 		if((j->y)-(j->h)<=(m->y)-(m->h)){
-			if(x2==x3 && (j->sens==2 || j->sens==5)){	//en collision avec le côté droit du sprite
+			if(x2==x3 && (j->sens==GAUCHE_HAUT || j->sens==ACCROUPIS_GAUCHE)){	//en collision avec le côté droit du sprite
 				res=1;
+				
 			}
-			if(x==x1 && (j->sens==1 || j->sens==4)){	//en collision avec le côté gauche du sprite
+			if(x==x1 && (j->sens==DROIT_HAUT || j->sens==ACCROUPIS_DROIT)){	//en collision avec le côté gauche du sprite
 				res=1;
 			}
 			
 			//pour le saut:
 			//le perso se trouve entre les deux extremités
-		/*	if(x>x1 && x<x3+(m->w)/2){	
+			if(x>x1 && x<x3+(m->w)/2){	
 				res=1;
 			}
 			if(x2<x3 && x2>x1-(m->w)/2){
 				res=1;
-			}*/
+			}
 		}
 	}
 	return res;
@@ -93,10 +94,10 @@ int est_en_collision_arme(sprite_t *sp1, arme_t *a){
 		int x2=(sp1->x)-(sp1->w)/2;	//x du coté gauche du sprite sp1
 		int x3=(a->x)-(a->w)/2;	//x du coté droit du sprite a
 		if((sp1->y)-(sp1->h)<=(a->y)-(a->h)){
-			if(x2<=x3 && (sp1->sens==2 || sp1->sens==5)){	//en collision avec le côté droit du sprite
+			if(x2<=x3 && (sp1->sens==GAUCHE_HAUT || sp1->sens==ACCROUPIS_GAUCHE)){	//en collision avec le côté droit du sprite
 				res=1;
 			}
-			if(x>=x1 && (sp1->sens==1 || sp1->sens==4)){	//en collision avec le côté gauche du sprite
+			if(x>=x1 && (sp1->sens==DROIT_HAUT || sp1->sens==ACCROUPIS_DROIT)){	//en collision avec le côté gauche du sprite
 				res=1;
 			}
 			
@@ -115,9 +116,10 @@ int est_en_collision_arme(sprite_t *sp1, arme_t *a){
 
 void gere_collision_arme(sprite_t *s, arme_t *a, tab_t *tab){
 	for(int i=0;i<NB_MURS;i++){
-		if(1==est_en_collision_arme(tab->tab_ennemi[i],a)){	//missile et un ennemi en collision
+		if(1==est_en_collision_arme(tab->tab_ennemi[i],a) || 1==est_en_collision_arme(tab->tab_mur[i],a)){	//missile et un ennemi en collision
 			set_est_visible_arme(a,1);
 			a->x=s->x;	//le missile revient au joueur
+			a->y=(s->y)+(s->h)/2;
 		}
 	}	
 }
@@ -130,26 +132,26 @@ void gere_collision_arme(sprite_t *s, arme_t *a, tab_t *tab){
 void gere_collision(sprite_t *sp1, tab_t *tab){
 		int x_en_moins=0;
 		int y_en_moins=0;
-		if(sp1->sens==1 || sp1->sens==4){
+		if(sp1->sens==DROIT_HAUT || sp1->sens==ACCROUPIS_DROIT){
 			x_en_moins=-10;
 		}
-		if(sp1->sens==2 || sp1->sens==5){
+		if(sp1->sens==GAUCHE_HAUT || sp1->sens==ACCROUPIS_GAUCHE){
 			x_en_moins=+10;
 		}
-		if(sp1->sens==3){
+		if(sp1->sens==SAUT_DROIT){
 			x_en_moins=-20;
 			y_en_moins=100;
 		}
-		if(sp1->sens==6){
+		if(sp1->sens==SAUT_GAUCHE){
 			x_en_moins=20;
 			y_en_moins=100;
 		}
 		for(int i=0;i<NB_MURS;i++){
-		if(1==(est_en_collision(sp1,tab->tab_mur[i]))){
-			//est en collision, on ne bouge pas
-			sp1->x=(sp1->x)+x_en_moins;
-			sp1->y=(sp1->y)+y_en_moins;
-		}
+			if(1==(est_en_collision(sp1,tab->tab_mur[i]))){
+				//est en collision, on ne bouge pas
+				sp1->x=(sp1->x)+x_en_moins;
+				sp1->y=(sp1->y)+y_en_moins;
+			}
 		}
 		for(int i=0;i<NB_ENNEMIS;i++){
 			if(1==(est_en_collision(sp1,tab->tab_ennemi[i]))){
@@ -195,18 +197,18 @@ int est_sur_sprite(sprite_t* sp1,sprite_t* sp2,int sens){
 */
 void bouger_haut(textures_t* textures, SDL_Renderer* renderer,sprite_t *sprite){
 	
-	if(sprite->sens==1 || sprite->sens==4){
-		if(sprite->sens ==4){
+	if(sprite->sens==DROIT_HAUT || sprite->sens==ACCROUPIS_DROIT){
+		if(sprite->sens ==ACCROUPIS_DROIT){
 			sprite->h=(sprite->h)*2;
 		}
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
-		sprite->sens=1;
+		sprite->sens=DROIT_HAUT;
 	}else{
-		if(sprite->sens ==5){
+		if(sprite->sens ==ACCROUPIS_GAUCHE){
 			sprite->h=(sprite->h)*2;
 		}
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
-		sprite->sens=2;
+		sprite->sens=GAUCHE_HAUT;
 	}
 }
 
@@ -218,12 +220,12 @@ void bouger_haut(textures_t* textures, SDL_Renderer* renderer,sprite_t *sprite){
 void bouger_bas(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite){
 	
 	sprite->h=(sprite->h)/2;
-	if(sprite->sens==1 || sprite->sens==4){
+	if(sprite->sens==DROIT_HAUT || sprite->sens==ACCROUPIS_DROIT){
 		textures->perso=charger_image("ressources/accroupis.bmp",renderer);
-		sprite->sens=4;
+		sprite->sens=ACCROUPIS_DROIT;
 	}else{
 		textures->perso=charger_image("ressources/accroupis_envers.bmp",renderer);
-		sprite->sens=5;
+		sprite->sens=ACCROUPIS_GAUCHE;
 	}
 }
 
@@ -237,12 +239,12 @@ void bouger_bas(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite){
 void bouger_gauche(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab){
 	
 	sprite->x=(sprite->x)-5;
-	if(sprite->sens==4 || sprite->sens==5){	//changement de l'orientation du perso
+	if(sprite->sens==ACCROUPIS_DROIT || sprite->sens==ACCROUPIS_GAUCHE){	//changement de l'orientation du perso
 		textures->perso=charger_image("ressources/accroupis_envers.bmp",renderer);
-		sprite->sens=5;
+		sprite->sens=ACCROUPIS_GAUCHE;
 	}else{
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
-		sprite->sens=2;
+		sprite->sens=GAUCHE_HAUT;
 	}
 	gere_collision(sprite,tab);
 	limite_horizontale(sprite);
@@ -259,12 +261,12 @@ void bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,
 	
 	sprite->x=(sprite->x)+5;
 	
-	if(sprite->sens==4 || sprite->sens==5){
+	if(sprite->sens==ACCROUPIS_DROIT || sprite->sens==ACCROUPIS_GAUCHE){
 		textures->perso=charger_image("ressources/accroupis.bmp",renderer);
-		sprite->sens=4;
+		sprite->sens=ACCROUPIS_DROIT;
 	}else{
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
-		sprite->sens=1;
+		sprite->sens=DROIT_HAUT;
 	}
 	gere_collision(sprite,tab);
 	limite_horizontale(sprite);
@@ -281,7 +283,7 @@ void bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,
 void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab){
 	
 	int y_base=sprite->y;
-	if(sprite->sens==1 || sprite->sens==4 || sprite->sens==3){		//saute vers la droite
+	if(sprite->sens==DROIT_HAUT || sprite->sens==ACCROUPIS_DROIT || sprite->sens==SAUT_DROIT){	//saute vers la droite
 		sprite->y=(sprite->y)-100;
 		sprite->x=(sprite->x)+20;
 
@@ -296,7 +298,7 @@ void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *ta
 		SDL_RenderPresent(renderer);
 		SDL_Delay(200);
 
-		sprite->sens=3;
+		sprite->sens=SAUT_DROIT;
 		gere_collision(sprite,tab);
 		for(int i=0;i<NB_MURS;i++){
 			if(1==est_sur_sprite(sprite,tab->tab_mur[i],sprite->sens)){
@@ -304,7 +306,6 @@ void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *ta
 			}else{
 				sprite->y=y_base;
 			}
-			printf("%d\n",est_sur_sprite(sprite,tab->tab_mur[i],sprite->sens));
 		}
 	}else{		//saute vers la gauche
 
@@ -322,7 +323,7 @@ void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *ta
 		SDL_RenderPresent(renderer);
 		SDL_Delay(200);
 
-		sprite->sens=6;
+		sprite->sens=SAUT_GAUCHE;
 		gere_collision(sprite,tab);
 		for(int i=0;i<NB_MURS;i++){
 			if(1==est_sur_sprite(sprite,tab->tab_mur[i],sprite->sens)){
@@ -423,16 +424,16 @@ void gere_missile(sprite_t *s){
 		set_est_visible_arme(s->missile,1);
 		s->missile->x=s->x;	//revient au niveau du joueur
 		
-	}else{
+	}else{	//le missile ne dépasse pas les bords
+		
 		if(get_est_visible_arme(s->missile)==0 && get_est_visible(s)==0){
-			if(s->sens==1 || s->sens==4 || s->sens==3){
+			if(s->sens==DROIT_HAUT || s->sens==ACCROUPIS_DROIT || s->sens==SAUT_DROIT){
 				//le missile part vers la droite
 				s->missile->x=(s->missile->x)+(s->missile->v);
 			}else{
 				//le missile part vers la gauche
 				s->missile->x=(s->missile->x)-(s->missile->v);
-			}
-			
-		}
+			}	
+		}	
 	}
 }
