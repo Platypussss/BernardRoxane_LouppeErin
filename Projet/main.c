@@ -22,24 +22,50 @@ int main(int argc, char *argv[]){
 	
 	//Mettre en place un contexte de rendu de l'écran
 	SDL_Renderer* ecran;
+
 	ecran=SDL_CreateRenderer(fenetre,-1,SDL_RENDERER_ACCELERATED);
-	
-	//Charger l'image
+
+	init_ttf();
+
 	textures_t textures;
 	init_textures(ecran,&textures);
+	
+	SDL_Color color={100,100,100,0};
+	char msg[]="La partie commence";
+	char c[20];
+	char d[]="Vous avez perdu !";
+	char e[]="Vous avez gagne !";
+	SDL_Texture *texte=charger_texte(ecran,msg,textures.ecriture,color);
+	SDL_Rect text_pos; // Position du texte
+	text_pos.x = SCREEN_WIDTH/4;
+	text_pos.y =SCREEN_HEIGHT/2;
+	text_pos.w=500;
+	text_pos.h=100;
 	
 	//initialisation
 	sprite_t joueur;
 	tab_t tab;
+	
+	//affichage du début de la partie
 	init_jeu(&joueur,&tab);
-	
-	
+	SDL_RenderClear(ecran);
+	SDL_RenderCopy(ecran,textures.fond,NULL,NULL);
+	SDL_RenderCopy(ecran,texte,NULL,&text_pos);
+	SDL_RenderPresent(ecran);
+	SDL_Delay(1000);
+
+	text_pos.x = 10;
+	text_pos.y =10;
+	text_pos.w=50;
+	text_pos.h=50;
 	// Boucle principale
 	while(!terminer){
-		
+		sprintf(c,"vie: %d",joueur.vie);
+		SDL_Texture *v=charger_texte(ecran,c,textures.ecriture,color);
 		//appliquer les textures sur l'écran
 		SDL_RenderClear(ecran);
 		SDL_RenderCopy(ecran,textures.fond,NULL,NULL);
+		SDL_RenderCopy(ecran,v,NULL,&text_pos);	//affichage de la vie du joueur
 		apply_monde(&textures,ecran,&joueur,&tab);
 		SDL_RenderPresent(ecran);
 		
@@ -56,7 +82,7 @@ int main(int argc, char *argv[]){
 						terminer = true;  
 						break;
 					case SDLK_UP:
-						bouger_haut(&textures,ecran,&joueur);
+						bouger_haut(&textures,ecran,&joueur,&tab);
 						bouger_ennemi(&textures,ecran,&joueur,&tab);
 						break;
 					case SDLK_DOWN:
@@ -83,7 +109,31 @@ int main(int argc, char *argv[]){
 						lancement_missile(&joueur);
 						break;
 					}
-				terminer=jeu_fini(&joueur,&tab);
+				if(jeu_fini(&joueur,&tab)){
+					if(joueur.vie==-1){	//le jeu est fini et le perso est mort
+						SDL_Texture *perdu=charger_texte(ecran,d,textures.ecriture,color);
+						SDL_Rect text_pos; // Position du texte
+						text_pos.x = SCREEN_WIDTH/4;
+						text_pos.y = SCREEN_HEIGHT/2;
+						text_pos.w=500;
+						text_pos.h=100;
+						SDL_RenderCopy(ecran,perdu,NULL,&text_pos);
+						SDL_RenderPresent(ecran);
+						SDL_Delay(2000);
+						terminer=true;
+					}else{	//le jeu est fini et les ennemis sont morts
+						SDL_Texture *gagne=charger_texte(ecran,e,textures.ecriture,color);
+						SDL_Rect text_pos; // Position du texte
+						text_pos.x = SCREEN_WIDTH/4;
+						text_pos.y = SCREEN_HEIGHT/2;
+						text_pos.w=500;
+						text_pos.h=100;
+						SDL_RenderCopy(ecran,gagne,NULL,&text_pos);
+						SDL_RenderPresent(ecran);
+						SDL_Delay(2000);
+						terminer=true;
+					}
+				}
 			}	
 		gere_missile(&joueur);
 		gere_ennemi(&joueur,&tab);
@@ -93,9 +143,11 @@ int main(int argc, char *argv[]){
 	clean_map(&tab);
 	SDL_DestroyTexture(textures.fond);
 	SDL_DestroyRenderer(ecran);
-
-	// Quitter SDL
+	clean_font(textures.ecriture);
+	
+	// Ferme tout
 	SDL_DestroyWindow(fenetre);
 	SDL_Quit();
+	TTF_Quit();
 	return 0;
 }

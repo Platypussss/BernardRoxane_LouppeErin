@@ -2,6 +2,7 @@
 #define H_AFFICHAGE
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -15,6 +16,7 @@ struct textures_s{
     SDL_Texture* murtoutseul;
     SDL_Texture* ennemi;
     SDL_Texture* arme;
+    TTF_Font* ecriture;
 };
 typedef struct textures_s textures_t;
 /**
@@ -43,6 +45,4 @@ void init_textures(SDL_Renderer* renderer,textures_t* textures);
 * \param y l'ordonnée du renderer où l'on applique la texture
 */
 void apply_texture(SDL_Texture *texture,SDL_Renderer *renderer,int x, int y);
-
-
 #endif

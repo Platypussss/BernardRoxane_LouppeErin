@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "affichage.h"
-
-
+#include "ttf.c"
 
 /**
 * \brief charge une image et retourne la surface de texture associée
@@ -30,6 +29,7 @@ void init_textures(SDL_Renderer* renderer,textures_t* textures){
 	textures->murtoutseul=charger_image("ressources/murtoutseul.bmp",renderer);
 	textures->ennemi=charger_image("ressources/ennemi.bmp",renderer);
 	textures->arme=charger_image("ressources/arme.bmp",renderer);
+	textures->ecriture=charger_ecriture("ressources/arial.ttf",14);
 }
 
 /**

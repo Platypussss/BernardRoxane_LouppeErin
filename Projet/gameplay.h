@@ -81,7 +81,7 @@ int est_sur_sprite(sprite_t* j,sprite_t* m,int sens);
 * \param textures les textures du jeu
 * \param renderer la surface correspondant à la surface du jeu
 */
-void bouger_haut(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite);
+void bouger_haut(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite,tab_t *tab);
 
 /**
 * \brief bouge le perso vers le bas
@@ -165,5 +165,6 @@ void gere_missile(sprite_t *s);
 * \param tab la struct d'ennemis
 */
 void gere_ennemi(sprite_t *s,tab_t *tab);
+
 
 #endif
