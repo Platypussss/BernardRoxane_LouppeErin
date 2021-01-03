@@ -285,9 +285,15 @@ void bouger_ennemi(textures_t* textures, SDL_Renderer* renderer, sprite_t *sprit
 			if(sprite->x < (tab->tab_ennemi[i]->x)+300){
 				if(sprite->x < tab->tab_ennemi[i]->x){
 					tab->tab_ennemi[i]->x=(tab->tab_ennemi[i]->x)-2;
+					if(sprite->x == tab->tab_ennemi[i]->x){
+						perte_vie(sprite);
+					}
 				}
 				if(sprite->x > tab->tab_ennemi[i]->x){
 					tab->tab_ennemi[i]->x=(tab->tab_ennemi[i]->x)+2;
+					if(sprite->x == tab->tab_ennemi[i]->x){
+						perte_vie(sprite);
+					}
 				}
 			}
 	}
