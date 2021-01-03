@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "arme.c"
 
 /**
  * \brief Type qui correspond a un ennemi du jeu
@@ -14,6 +15,7 @@ struct ennemi_s{
 	int y;
 	int h;
 	int w;
+	arme_t *missile;
 };
 typedef struct ennemi_s ennemi_t;
 

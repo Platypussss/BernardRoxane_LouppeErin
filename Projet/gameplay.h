@@ -159,6 +159,11 @@ void lancement_missile(sprite_t *s);
 */
 void gere_missile(sprite_t *s);
 
+/**
+* \brief la fonction qui gère les collisions du missile et des ennemis
+* \param s le sprite en collision 
+* \param tab la struct d'ennemis
+*/
 void gere_ennemi(sprite_t *s,tab_t *tab);
 
 #endif

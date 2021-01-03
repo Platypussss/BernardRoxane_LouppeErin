@@ -15,7 +15,7 @@ void apply_monde(textures_t *textures,SDL_Renderer *renderer, sprite_t *joueur, 
 	if(get_est_visible(joueur)==0){	//le joueur est visible
 		apply_texture(textures->perso,renderer,joueur->x,joueur->y);
 	}	
-	if(get_est_visible_arme(joueur->missile)==0){	//le missile du joueur joueur est visible
+	if(get_est_visible_arme(joueur->missile)==0){	//le missile du joueur est visible
 		apply_texture(textures->arme,renderer,joueur->missile->x,joueur->missile->y);
 	}
 	for(int i=0;i<NB_MURS;i++){	
@@ -25,6 +25,9 @@ void apply_monde(textures_t *textures,SDL_Renderer *renderer, sprite_t *joueur, 
 		if(get_est_visible(tab->tab_ennemi[i])==0){	//les ennemis sont visibles
 			apply_texture(textures->ennemi,renderer,tab->tab_ennemi[i]->x,tab->tab_ennemi[i]->y);
 		}	
+		if(get_est_visible_arme(joueur->missile)==0){	//le missile de l'ennemi est visible
+		apply_texture(textures->arme,renderer,tab->tab_ennemi[i]->missile->x,tab->tab_ennemi[i]->missile->y);
+		}
 	}
 }
 
@@ -36,7 +39,7 @@ void apply_monde(textures_t *textures,SDL_Renderer *renderer, sprite_t *joueur, 
 void init_jeu(sprite_t *joueur,tab_t *tab){
 	init_sprite(joueur,0,425,100,100,DROIT_HAUT,5,0);
 	init_map(tab);
-	lire_fichier("file.txt",tab);	//moifie les coordonnées des murs en fonction du fichier txt*/
+	lire_fichier("file.txt",tab);	//modifie les coordonnées des murs en fonction du fichier txt*/
 }
 
 /**
@@ -271,7 +274,6 @@ void bouger_ennemi(textures_t* textures, SDL_Renderer* renderer, sprite_t *sprit
 	}
 }
 
-
 /**
 * \brief fait sauter le perso
 * \param textures les textures du jeu
@@ -440,6 +442,11 @@ void gere_missile(sprite_t *s){
 	}
 }
 
+/**
+* \brief la fonction qui gère les collisions du missile et des ennemis
+* \param s le sprite en collision 
+* \param tab la struct d'ennemis
+*/
 void gere_ennemi(sprite_t *s,tab_t *tab){
 	for(int i=0;i<NB_ENNEMIS;i++){
 		if(get_est_visible(tab->tab_ennemi[i])==0 && get_est_visible_arme(s->missile)==0){
