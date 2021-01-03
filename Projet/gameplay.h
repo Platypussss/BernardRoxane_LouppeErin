@@ -39,13 +39,19 @@ void perte_vie(sprite_t *sp1);
 
 /**
 * \brief détecte les collisions entre les sprites
-* \param j le sprite
-* \param m le sprite
+* \param sp1 le sprite
+* \param sp2 le sprite
 * \return 1 s'il y a une collision
 */
-int est_en_collision(sprite_t* sprite,sprite_t* sprite2);
+int est_en_collision(sprite_t* sp1,sprite_t* sp2);
 
-int est_en_collision_arme(sprite_t *sp1, arme_t *a);
+/**
+* \brief détecte les collisions entre les sprites
+* \param sp1 le sprite
+* \param sp2 le sprite
+* \return 1 s'il y a une collision
+*/
+int est_en_collision_arme(sprite_t *sp1, arme_t *sp2);
 
 /**
 * \brief fonction qui gère les collisions
@@ -54,6 +60,12 @@ int est_en_collision_arme(sprite_t *sp1, arme_t *a);
 */
 void gere_collision(sprite_t *sp1, tab_t *tab);
 
+/**
+* \brief fonction qui gère les collisions
+* \param s le sprite 
+* \param a le missile en potentiel collision
+* \param tab le tableau de sprite en potentiel collision
+*/
 void gere_collision_arme(sprite_t *s, arme_t *a, tab_t *tab);
 
 /**
@@ -95,6 +107,14 @@ void bouger_gauche(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,
 * \param tab le tableau en potentiel collision avec le sprite
 */
 void bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *tab);
+
+
+/**
+* \brief bouge l'ennemi en fonction du joueur
+* \param textures les textures du jeu
+* \param renderer la surface correspondant à la surface du jeu
+*/
+void bouger_ennemi(textures_t* textures, SDL_Renderer* renderer, sprite_t *sprite, tab_t* tab);
 
 /**
 * \brief fait sauter le perso
@@ -138,5 +158,7 @@ void lancement_missile(sprite_t *s);
 * \param s le sprite du missile à déplacer
 */
 void gere_missile(sprite_t *s);
+
+void gere_ennemi(sprite_t *s,tab_t *tab);
 
 #endif

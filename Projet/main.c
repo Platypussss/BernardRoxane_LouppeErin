@@ -57,18 +57,23 @@ int main(int argc, char *argv[]){
 						break;
 					case SDLK_UP:
 						bouger_haut(&textures,ecran,&joueur);
+						bouger_ennemi(&textures,ecran,&joueur,&tab);
 						break;
 					case SDLK_DOWN:
 						bouger_bas(&textures,ecran,&joueur);
+						bouger_ennemi(&textures,ecran,&joueur,&tab);
 						break;
 					case SDLK_LEFT:
 						bouger_gauche(&textures,ecran,&joueur,&tab);
+						bouger_ennemi(&textures,ecran,&joueur,&tab);
 						break;
 					case SDLK_RIGHT:
 						bouger_droite(&textures,ecran,&joueur,&tab);
+						bouger_ennemi(&textures,ecran,&joueur,&tab);
 						break;
 					case SDLK_SPACE:
 						saut(&textures,ecran,&joueur,&tab);
+						bouger_ennemi(&textures,ecran,&joueur,&tab);
 						break;
 				}
 				//évenements souris
@@ -79,8 +84,9 @@ int main(int argc, char *argv[]){
 						break;
 					}
 				terminer=jeu_fini(&joueur,&tab);
-			}
+			}	
 		gere_missile(&joueur);
+		gere_ennemi(&joueur,&tab);
 	}
 	//Libérer de la mémoire
 	clean_sprite(&joueur);

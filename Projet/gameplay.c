@@ -53,75 +53,50 @@ void perte_vie(sprite_t *sp1){
 * \param m le sprite
 * \return 1 s'il y a une collision
 */
-int est_en_collision(sprite_t* j,sprite_t* m){
-	int res=0;
-	if(get_est_visible(j)==1 || get_est_visible(m)==1){	//au moins un des deux sprites est invisible
-		res=0;
-	}else{	//aucun des sprites est invisibles
-		int x=(j->x)+(j->w)/2;	//x du coté droit du sprite j
-		int x1=(m->x)-(m->w)/2;	//x du coté gauche du sprite m
-		int x2=(j->x)-(j->w)/2;	//x du coté gauche du sprite j
-		int x3=(m->x)-(m->w)/2;	//x du coté droit du sprite m
-		if((j->y)-(j->h)<=(m->y)-(m->h)){
-			if(x2==x3 && (j->sens==GAUCHE_HAUT || j->sens==ACCROUPIS_GAUCHE)){	//en collision avec le côté droit du sprite
-				res=1;
-				
-			}
-			if(x==x1 && (j->sens==DROIT_HAUT || j->sens==ACCROUPIS_DROIT)){	//en collision avec le côté gauche du sprite
-				res=1;
-			}
-			
-			//pour le saut:
-			//le perso se trouve entre les deux extremités
-			if(x>x1 && x<x3+(m->w)/2){	
-				res=1;
-			}
-			if(x2<x3 && x2>x1-(m->w)/2){
-				res=1;
-			}
-		}
+int est_en_collision(sprite_t* sp1,sprite_t* sp2){
+	
+	if(((sp1->x)-(sp2->x))*((sp1->x)-(sp2->x))+(((sp1->y)-(sp2->y))*((sp1->y)-(sp2->y)))<((sp1->h)*(sp1->h))){
+		return 1; //les sprites sont en collision
 	}
-	return res;
+	return 0;	//les sprites ne sont pas en collision
 }
 
-int est_en_collision_arme(sprite_t *sp1, arme_t *a){
-	int res=0;
-	if(get_est_visible(sp1)==1 || get_est_visible_arme(a)==1){	//au moins un des deux sprites est invisible
-		res=0;
-	}else{	//aucun des sprites est invisibles
-		int x=(sp1->x)+(sp1->w)/2;	//x du coté droit du sprite sp1
-		int x1=(a->x)-(a->w)/2;	//x du coté gauche du sprite a
-		int x2=(sp1->x)-(sp1->w)/2;	//x du coté gauche du sprite sp1
-		int x3=(a->x)-(a->w)/2;	//x du coté droit du sprite a
-		if((sp1->y)-(sp1->h)<=(a->y)-(a->h)){
-			if(x2<=x3 && (sp1->sens==GAUCHE_HAUT || sp1->sens==ACCROUPIS_GAUCHE)){	//en collision avec le côté droit du sprite
-				res=1;
-			}
-			if(x>=x1 && (sp1->sens==DROIT_HAUT || sp1->sens==ACCROUPIS_DROIT)){	//en collision avec le côté gauche du sprite
-				res=1;
-			}
-			
-			//pour le saut:
-			//le perso se trouve entre les deux extremités
-			/*if(x>x1 && x<x3+(a->w)/2){	
-				res=1;
-			}
-			if(x2<x3 && x2>x1-(a->w)/2){
-				res=1;
-			}*/
-		}
+/**
+* \brief détecte les collisions entre les sprites
+* \param sp1 le sprite
+* \param sp2 le sprite
+* \return 1 s'il y a une collision
+*/
+int est_en_collision_arme(sprite_t *sp1, arme_t *sp2){
+	
+	if(((sp1->x)-(sp2->x))*((sp1->x)-(sp2->x))+(((sp1->y)-(sp2->y))*((sp1->y)-(sp2->y)))<((sp1->h)*(sp1->h))){
+		return 1; //les sprites sont en collision
 	}
-	return res;
+	return 0;	//les sprites ne sont pas en collision
 }
 
+/**
+* \brief fonction qui gère les collisions
+* \param s le sprite 
+* \param a le missile en potentiel collision
+* \param tab le tableau de sprite en potentiel collision
+*/
 void gere_collision_arme(sprite_t *s, arme_t *a, tab_t *tab){
 	for(int i=0;i<NB_MURS;i++){
-		if(1==est_en_collision_arme(tab->tab_ennemi[i],a) || 1==est_en_collision_arme(tab->tab_mur[i],a)){	//missile et un ennemi en collision
+		if(1==est_en_collision_arme(tab->tab_mur[i],a)){	//missile et un mur en collision
 			set_est_visible_arme(a,1);
 			a->x=s->x;	//le missile revient au joueur
 			a->y=(s->y)+(s->h)/2;
 		}
 	}	
+	for(int i=0;i<NB_ENNEMIS;i++){
+		if(1==est_en_collision_arme(tab->tab_ennemi[i],a)){	//missile et un ennemi en collision
+			set_est_visible_arme(a,1);
+			a->x=s->x;	//le missile revient au joueur
+			a->y=(s->y)+(s->h)/2;
+			perte_vie(tab->tab_ennemi[i]);	//l'ennemi perd une vie
+		}
+	}
 }
 
 /**
@@ -219,7 +194,7 @@ void bouger_haut(textures_t* textures, SDL_Renderer* renderer,sprite_t *sprite){
 */
 void bouger_bas(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite){
 	
-	sprite->h=(sprite->h)/2;
+	sprite->h=(sprite->h)/4;
 	if(sprite->sens==DROIT_HAUT || sprite->sens==ACCROUPIS_DROIT){
 		textures->perso=charger_image("ressources/accroupis.bmp",renderer);
 		sprite->sens=ACCROUPIS_DROIT;
@@ -270,6 +245,30 @@ void bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,
 	}
 	gere_collision(sprite,tab);
 	limite_horizontale(sprite);
+}
+
+/**
+* \brief bouge l'ennemi en fonction du joueur
+* \param textures les textures du jeu
+* \param renderer la surface correspondant à la surface du jeu
+*/
+void bouger_ennemi(textures_t* textures, SDL_Renderer* renderer, sprite_t *sprite, tab_t* tab){
+	for(int i=0;i<NB_ENNEMIS;i++){
+			if(sprite->x < (tab->tab_ennemi[i]->x)+300){
+				if(sprite->x < tab->tab_ennemi[i]->x){
+					tab->tab_ennemi[i]->x=(tab->tab_ennemi[i]->x)-2;
+					if(sprite->x == tab->tab_ennemi[i]->x){
+						perte_vie(sprite);
+					}
+				}
+				if(sprite->x > tab->tab_ennemi[i]->x){
+					tab->tab_ennemi[i]->x=(tab->tab_ennemi[i]->x)+2;
+					if(sprite->x == tab->tab_ennemi[i]->x){
+						perte_vie(sprite);
+					}
+				}
+			}
+	}
 }
 
 
@@ -395,15 +394,18 @@ void limite_horizontale(sprite_t *j){
 * \return true si le joueur n'a plus de vie ou si tout les ennemis n'ont plus de vie, flase sinon
 */
 bool jeu_fini(sprite_t *j,tab_t *tab){
+	int r=0;
 	if(j->vie==-1){	//le joueur n'a plus de vie
 		return true;
 	}
 	for(int i=0;i<NB_ENNEMIS;i++){
-		if(tab->tab_ennemi[i]->vie!=-1){	//au moins un ennemis a encore de la vie
-			return false;
-		}
+		if(get_est_visible(tab->tab_ennemi[i])==0){
+			if(tab->tab_ennemi[i]->vie==0){	//au moins un ennemis a encore de la vie
+				return true;
+			}
+		}	
 	}
-	return true;
+	return false;
 }
 
 /**
@@ -435,5 +437,13 @@ void gere_missile(sprite_t *s){
 				s->missile->x=(s->missile->x)-(s->missile->v);
 			}	
 		}	
+	}
+}
+
+void gere_ennemi(sprite_t *s,tab_t *tab){
+	for(int i=0;i<NB_ENNEMIS;i++){
+		if(get_est_visible(tab->tab_ennemi[i])==0 && get_est_visible_arme(s->missile)==0){
+			gere_collision_arme(s,s->missile,tab);
+		}
 	}
 }
