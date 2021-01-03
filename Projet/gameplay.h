@@ -74,7 +74,7 @@ void gere_collision_arme(sprite_t *s, arme_t *a, tab_t *tab);
 * \param m le sprite 
 * \return 1 si le sprite se trouve sur un sprite
 */
-int est_sur_sprite(sprite_t* j,sprite_t* m,int sens);
+int est_sur_sprite(sprite_t* j,sprite_t* m);
 
 /**
 * \brief bouge le perso vers le haut
@@ -111,10 +111,10 @@ void bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,
 
 /**
 * \brief bouge l'ennemi en fonction du joueur
-* \param textures les textures du jeu
-* \param renderer la surface correspondant à la surface du jeu
+* \param sprite le joueur
+* \param tab les ennemis
 */
-void bouger_ennemi(textures_t* textures, SDL_Renderer* renderer, sprite_t *sprite, tab_t* tab);
+void bouger_ennemi( sprite_t *sprite, tab_t* tab);
 
 /**
 * \brief fait sauter le perso

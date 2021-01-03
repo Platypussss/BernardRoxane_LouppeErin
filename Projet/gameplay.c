@@ -119,12 +119,12 @@ void gere_collision(sprite_t *sp1, tab_t *tab){
 			x_en_moins=+10;
 		}
 		if(sp1->sens==SAUT_DROIT){
-			x_en_moins=-20;
-			y_en_moins=100;
+			x_en_moins=-200;
+			y_en_moins=200;
 		}
 		if(sp1->sens==SAUT_GAUCHE){
-			x_en_moins=20;
-			y_en_moins=100;
+			x_en_moins=200;
+			y_en_moins=200;
 		}
 		for(int i=0;i<NB_MURS;i++){
 			if(1==(est_en_collision(sp1,tab->tab_mur[i]))){
@@ -149,7 +149,7 @@ void gere_collision(sprite_t *sp1, tab_t *tab){
 * \param sp2 un sprite 
 * \return 1 si le sprite se trouve sur un sprite
 */
-int est_sur_sprite(sprite_t* sp1,sprite_t* sp2,int sens){
+int est_sur_sprite(sprite_t* sp1,sprite_t* sp2){
 	if(est_en_collision(sp1,sp2)==1 && sp1->h>sp2->h){
 		return 1;
 	}
@@ -186,7 +186,7 @@ void bouger_haut(textures_t* textures, SDL_Renderer* renderer,sprite_t *sprite,t
 */
 void bouger_bas(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite){
 	
-	sprite->h=(sprite->h)/4;
+	sprite->h=(sprite->h)/2;
 	if(sprite->sens==DROIT_HAUT || sprite->sens==ACCROUPIS_DROIT || sprite->sens==SAUT_DROIT){
 		textures->perso=charger_image("ressources/accroupis.bmp",renderer);
 		sprite->sens=ACCROUPIS_DROIT;
@@ -241,10 +241,10 @@ void bouger_droite(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,
 
 /**
 * \brief bouge l'ennemi en fonction du joueur
-* \param textures les textures du jeu
-* \param renderer la surface correspondant à la surface du jeu
+* \param sprite le joueur
+* \param tab les ennemis
 */
-void bouger_ennemi(textures_t* textures, SDL_Renderer* renderer, sprite_t *sprite, tab_t* tab){
+void bouger_ennemi(sprite_t *sprite, tab_t* tab){
 	for(int i=0;i<NB_ENNEMIS;i++){
 			if(sprite->x < (tab->tab_ennemi[i]->x)+300){
 				if(sprite->x < tab->tab_ennemi[i]->x){
@@ -274,8 +274,8 @@ void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *ta
 	
 	int y_base=sprite->y;
 	if(sprite->sens==DROIT_HAUT || sprite->sens==ACCROUPIS_DROIT || sprite->sens==SAUT_DROIT){	//saute vers la droite
-		sprite->y=(sprite->y)-100;
-		sprite->x=(sprite->x)+20;
+		sprite->y=(sprite->y)-200;
+		sprite->x=(sprite->x)+200;
 
 		//change l'apparence du perso
 		textures->murtoutseul=charger_image("ressources/murtoutseul.bmp",renderer);
@@ -290,18 +290,12 @@ void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *ta
 
 		sprite->sens=SAUT_DROIT;
 		gere_collision(sprite,tab);
-		for(int i=0;i<NB_MURS;i++){
-			if(1==est_sur_sprite(sprite,tab->tab_mur[i],sprite->sens)){
-				sprite->y=(tab->tab_mur[i]->y)+(sprite->h);
-			}else{
-				sprite->y=y_base;
-			}
-		}
+		sprite->y=y_base;
 		textures->perso=charger_image("ressources/marche1.bmp",renderer);
 	}else{		//saute vers la gauche
 
-		sprite->y=(sprite->y)-100;
-		sprite->x=(sprite->x)-20;
+		sprite->y=(sprite->y)-200;
+		sprite->x=(sprite->x)-200;
 
 		//change l'apparence du perso
 		textures->murtoutseul=charger_image("ressources/murtoutseul.bmp",renderer);
@@ -316,13 +310,7 @@ void saut(textures_t* textures,SDL_Renderer* renderer,sprite_t* sprite,tab_t *ta
 
 		sprite->sens=SAUT_GAUCHE;
 		gere_collision(sprite,tab);
-		for(int i=0;i<NB_MURS;i++){
-			if(1==est_sur_sprite(sprite,tab->tab_mur[i],sprite->sens)){
-				sprite->y=(tab->tab_mur[i]->y)-(tab->tab_mur[i]->h)/2;
-			}else{
-				sprite->y=y_base;
-			}
-		}
+		sprite->y=y_base;
 		textures->perso=charger_image("ressources/marche1_envers.bmp",renderer);
 	}
 	
@@ -357,6 +345,7 @@ void lire_fichier(const char* nomfichier,tab_t *tab){
 				//mets les coordonnées de l'ennemi en fonction de la position du 'e' dans le fichier
 				tab->tab_ennemi[j]->x=a;
 				tab->tab_ennemi[j]->y=b;
+				tab->tab_ennemi[j]->est_visible=0;
 				j++;	
 			}
 			a=a+50;	
@@ -391,11 +380,11 @@ bool jeu_fini(sprite_t *j,tab_t *tab){
 		return true;
 	}
 	for(int i=0;i<NB_ENNEMIS;i++){
-		if(get_est_visible(tab->tab_ennemi[i])==1){
+		if(get_est_visible(tab->tab_ennemi[i])==1){	//le nb d'ennemis invisibles
 			nb++;
 		}	
 	}
-	if(nb==NB_ENNEMIS){
+	if(nb==NB_ENNEMIS){	//tous les ennemis sont invisibles donc morts
 		return true;
 	}
 	return false;

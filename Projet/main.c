@@ -83,23 +83,23 @@ int main(int argc, char *argv[]){
 						break;
 					case SDLK_UP:
 						bouger_haut(&textures,ecran,&joueur,&tab);
-						bouger_ennemi(&textures,ecran,&joueur,&tab);
+						bouger_ennemi(&joueur,&tab);
 						break;
 					case SDLK_DOWN:
 						bouger_bas(&textures,ecran,&joueur);
-						bouger_ennemi(&textures,ecran,&joueur,&tab);
+						bouger_ennemi(&joueur,&tab);
 						break;
 					case SDLK_LEFT:
 						bouger_gauche(&textures,ecran,&joueur,&tab);
-						bouger_ennemi(&textures,ecran,&joueur,&tab);
+						bouger_ennemi(&joueur,&tab);
 						break;
 					case SDLK_RIGHT:
 						bouger_droite(&textures,ecran,&joueur,&tab);
-						bouger_ennemi(&textures,ecran,&joueur,&tab);
+						bouger_ennemi(&joueur,&tab);
 						break;
 					case SDLK_SPACE:
 						saut(&textures,ecran,&joueur,&tab);
-						bouger_ennemi(&textures,ecran,&joueur,&tab);
+						bouger_ennemi(&joueur,&tab);
 						break;
 				}
 				//évenements souris
