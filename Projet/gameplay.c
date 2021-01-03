@@ -186,7 +186,7 @@ void bouger_haut(textures_t* textures, SDL_Renderer* renderer,sprite_t *sprite,t
 */
 void bouger_bas(textures_t* textures,SDL_Renderer* renderer,sprite_t *sprite){
 	
-	sprite->h=(sprite->h)/2;
+	sprite->h=(sprite->h)/4;
 	if(sprite->sens==DROIT_HAUT || sprite->sens==ACCROUPIS_DROIT || sprite->sens==SAUT_DROIT){
 		textures->perso=charger_image("ressources/accroupis.bmp",renderer);
 		sprite->sens=ACCROUPIS_DROIT;
